@@ -360,31 +360,6 @@ class UserController extends Controller
         ], 200);
     }
     
-    public function costs(Request $request)
-    {
-        $user = JWTAuth::parseToken()->authenticate();
-		if ($user->token != JWTAuth::getToken()) {
-			return response()->json([
-				'status' => 401,
-				'message' => 'Invalid credentials'
-			], 401);
-		}
-        
-        $costs = $user->userRelation->getListCosts();
-        $grandCost = null;
-        foreach ($costs as $cost) :
-            $grandCost += $cost->value;
-        endforeach;
-        
-        return response()->json([
-            'status' => 200,
-            'message' => 'success',
-            'grand_cost' => $grandCost,
-            'data' => $costs,
-        ], 200);
-    }
-    
-    
     public function resendRegisterRelation($userId, Request $request)
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -434,5 +409,202 @@ class UserController extends Controller
             'data' => [],
         ], 200);
        
+    }
+
+    /**
+     * 
+     * @param Request $request
+     * @return type
+     */
+    public function changePassword(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (!$user) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+        
+        $validator = \Validator::make($request->all(), [
+            'current_password' => 'required|min:6',
+            'password' => 'required|min:6',
+            'confirm_password' => 'required|min:6|same:password',
+        ]);
+
+        if ($validator->fails()) {
+			return response()->json([
+				'status' => 400,
+				'message' => 'Some Parameters is required',
+				'validators' => FormatConverter::parseValidatorErrors($validator),
+			], 400);
+        }
+        
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+				'status' => 400,
+				'message' => 'Current Password doesnt match',
+				'validators' => null,
+			], 400);
+        }
+        
+        $user->password = bcrypt($request->password);
+        $user->forgot_token = null;
+        $user->save();
+        
+        if ($user->gender == User::GENDER_MALE) {
+            $relation = $user->maleUserRelation->toArray();
+            $relation['partner'] = $relation['female_user'];
+            unset($user->maleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        } else {
+            $relation = $user->femaleUserRelation->toArray();
+            $relation['partner'] = $relation['male_user'];
+            unset($user->femaleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Change Password Success',
+            'data' => array_merge($user->toArray(), [
+                'relation' => $relation
+            ]),
+        ], 200);
+    }
+
+    /**
+     * @param type $code
+     * @param Request $request
+     * @return type
+     */
+    public function deletePhotoProfile($code, Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->id != $code) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+		
+		if ($user->token != JWTAuth::getToken()) {
+			return response()->json([
+				'status' => 401,
+				'message' => 'Invalid credentials'
+			], 401);
+		}
+
+        if ($user->gender == User::GENDER_MALE) {
+            $relation = $user->maleUserRelation;
+            
+            $relation = $user->maleUserRelation->toArray();
+            $relation['partner'] = $relation['female_user'];
+            unset($user->maleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        } else {
+            $relation = $user->femaleUserRelation;
+            
+            $relation = $user->femaleUserRelation->toArray();
+            $relation['partner'] = $relation['male_user'];
+            unset($user->femaleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Delete Success',
+            'data' => array_merge($user->toArray(), [
+                'relation' => $relation
+            ]),
+        ], 200);
+    }
+    
+    /**
+     * @param type $code
+     * @param Request $request
+     * @return type
+     */
+    public function updatePhotoProfile($code, Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->id != $code) {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+		
+		if ($user->token != JWTAuth::getToken()) {
+			return response()->json([
+				'status' => 401,
+				'message' => 'Invalid credentials'
+			], 401);
+		}
+
+        $validator = \Validator::make($request->all(), [
+            'photo_base64' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+			return response()->json([
+				'status' => 400,
+				'message' => 'Some Parameters is required',
+				'validators' => FormatConverter::parseValidatorErrors($validator),
+			], 400);
+		}
+
+        $imageBase64 = $request->photo_base64;
+        if (!ImageHelper::isImageBase64($imageBase64)) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Some Parameters is invalid',
+                'validators' => [
+                    'photo_base64' => 'format is invalid',
+                ],
+            ], 400);
+        }
+
+        $data = ImageHelper::getImageBase64Information($imageBase64);
+        $img = \Eventviva\ImageResize::createFromString(base64_decode($data['data']));
+        $img->resizeToWidth(480);
+
+        $user->deletePhoto();
+        $imageFilename = $user->generateFilename("photo", $data['extension']);
+        $img->save($user->getPath() . $imageFilename);
+        $user->photo = $imageFilename;
+        $user->save();
+        
+        if ($user->gender == User::GENDER_MALE) {
+            $relation = $user->maleUserRelation;
+        } else {
+            $relation = $user->femaleUserRelation;
+        }
+
+        if ($user->gender == User::GENDER_MALE) {
+            $relation = $user->maleUserRelation->toArray();
+            $relation['partner'] = $relation['female_user'];
+            unset($user->maleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        } else {
+            $relation = $user->femaleUserRelation->toArray();
+            $relation['partner'] = $relation['male_user'];
+            unset($user->femaleUserRelation);
+            unset($relation['male_user']);
+            unset($relation['female_user']);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Update Success',
+            'data' => array_merge($user->toArray(), [
+                'relation' => $relation
+            ]),
+        ], 200);
     }
 }

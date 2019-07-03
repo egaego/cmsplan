@@ -49,6 +49,7 @@ class User extends Authenticatable
         'registered_device_number',
         'registered_at',
         'token',
+        'photo',
         'status',
         'role',
         'device_number',
@@ -82,6 +83,11 @@ class User extends Authenticatable
             return $this->maleUserRelation();
         }
         return $this->femaleUserRelation();
+    }
+
+    public function userGalleries()
+    {
+        return $this->hasMany('\App\UserGallery', 'user_id', 'id');
     }
     
     public function maleUserRelation()
@@ -160,7 +166,12 @@ class User extends Authenticatable
 			self::STATUS_NEED_REGISTER => 'Need Registered',
 			self::STATUS_INACTIVE => 'Inactive',
 		];
-	}
+    }
+    
+    public function deletePhoto()
+    {
+        @unlink($this->getPath() . $this->photo);
+    }
     
     /**
 	 * @return array

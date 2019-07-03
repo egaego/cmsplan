@@ -15,6 +15,24 @@
     {!! $errors->first('name', '<p class="help-block">:message</p>') !!}
 </div>
 
+<div aria-required="true" class="form-group required form-group-default {{ $errors->has('icon') ? 'has-error' : ''}}">
+    {!! Form::label('icon', 'Icon') !!}
+    {!! Form::text('icon', null, ['class' => 'form-control']) !!}
+    {!! $errors->first('icon', '<p class="help-block">:message</p>') !!}
+</div>
+
+<div aria-required="true" class="form-group required form-group-default {{ $errors->has('file') ? 'has-error' : ''}}">
+    {!! Form::label('file', 'Image') !!}
+    @if(isset($model))
+    <br/>
+    <div style="width:50%">
+        {!! $model->getFileImg() !!}
+    </div>
+    @endif
+    {!! Form::file('file', ['class' => 'form-control']) !!}
+    {!! $errors->first('file', '<p class="help-block">:message</p>') !!}
+</div>
+
 <div aria-required="true" class="form-group required form-group-default form-group-default-select2 {{ $errors->has('status') ? 'has-error' : ''}}">
     {!! Form::label('status', 'Status') !!}
     {!! Form::select('status', \App\Concept::statusLabels(), null, ['class' => 'select2 full-width', 'data-init-plugin' => 'select2']) !!}

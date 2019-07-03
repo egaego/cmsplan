@@ -46,19 +46,8 @@ class Kernel extends ConsoleKernel
         })->dailyAt('23:00');
         
         $schedule->call(function() {
-            \App\ProcedurePreparation::sendPushNotification();
-            Log::info('Scheduler is running: every 15 minutes');
-        })->everyFifteenMinutes();
-        
-        $schedule->call(function() {
-            \App\ProcedurePayment::sendPushNotification();
-            Log::info('Scheduler is running: daily at 08:00');
-        })->dailyAt('09:00');
-        
-        $schedule->call(function() {
-            \App\ProcedurePayment::sendPushNotification();
-            Log::info('Scheduler is running: daily at 14:00');
-        })->dailyAt('14:00');
+            \App\ConceptDetail::sendPushNotification();
+        })->dailyAt('06:00');
     }
 
     /**

@@ -28,6 +28,9 @@ class GetUserFromToken extends BaseGetUserFromToken
      */
     public function handle($request, Closure $next)
     {
+        $headers = apache_request_headers();
+        $request->headers->set('Authorization', isset($headers['Authorizations']) ? $headers['Authorizations'] : $headers['authorizations']);
+
         if (! $token = $this->auth->setRequest($request)->getToken()) {
             return $this->respond('tymon.jwt.absent', 'token_not_provided', 400);
         }

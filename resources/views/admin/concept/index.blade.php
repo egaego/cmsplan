@@ -33,6 +33,9 @@
                             </thead>
                         </table>
                     </div>
+                    <div class="card-footer">
+                        <a href="{{ route('concept.create') }}" class="btn btn-primary btn-rounded">Add New</a>
+                    </div>
                 </div>
             </div>
         </div>

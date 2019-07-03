@@ -26,8 +26,6 @@ class Message extends BaseModel
      */
     protected $fillable = [
         'user_relation_id',
-        'procedure_payment_id',
-        'procedure_preparation_id',
         'name',
         'description',
         'file',
@@ -169,7 +167,7 @@ class Message extends BaseModel
         
         foreach ($messages as $message) :
             $fields = [
-                'app_id' => 'c054887d-802a-4395-9603-51e82b790459',
+                'app_id' => '47a9ea91-aefe-4ca7-b85e-f788edfe1354',
                 'data' => [
                     'id' => $message->id,
                     'name' => $message->name,

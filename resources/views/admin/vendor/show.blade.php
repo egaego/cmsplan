@@ -21,8 +21,8 @@
                                     <td>{{ $model->id }}</td>
                                 </tr>
                                 <tr>
-                                    <th> Category </th>
-                                    <td> {{ $model->category }} </td>
+                                    <th> Concept </th>
+                                    <td> {{ $model->concept ? $model->concept->name : "" }} </td>
                                 </tr>
                                 <tr>
                                     <th> Name </th>
@@ -41,8 +41,12 @@
                                     <td> {!! $model->getFileThumbImg() !!} </td>
                                 </tr>
                                 <tr>
-                                    <th> Website </th>
-                                    <td> {!! $model->website !!} </td>
+                                    <th> Email </th>
+                                    <td> {!! $model->email !!} </td>
+                                </tr>
+                                <tr>
+                                    <th> Phone </th>
+                                    <td> {!! $model->phone !!} </td>
                                 </tr>
                                 <tr>
                                     <th> Instagram </th>

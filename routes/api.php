@@ -34,7 +34,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/reset-password', 'Api\AuthController@resetPassword');
         
         Route::group(['middleware' => ['jwt.auth']], function () {
-            Route::post('/change-password/{code}', 'Api\AuthController@changePassword');
             Route::post('/logout', 'Api\AuthController@logout');
         });
     });
@@ -43,8 +42,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/page/{category}', 'Api\RequestController@getPage');
     
     Route::group(['prefix' => 'vendor'], function () {
-        Route::get('/', 'Api\VendorController@index');
-        Route::get('/{id}', 'Api\VendorController@show');
+        Route::get('/concept', 'Api\VendorController@concept');
+        Route::get('/detail/{conceptId}', 'Api\VendorController@list');
+    });
+
+    Route::group(['prefix' => 'gallery'], function () {
+        Route::get('/', 'Api\GalleryController@index');
     });
     
     Route::group(['middleware' => ['jwt.auth']], function () {
@@ -55,9 +58,22 @@ Route::group(['prefix' => 'v1'], function () {
             Route::patch('/update/{id}', 'Api\ContentController@update');
             Route::delete('/delete/{id}', 'Api\ContentController@delete');
         });
+
+        Route::group(['prefix' => 'gallery'], function () {
+            Route::get('/user-galleries', 'Api\GalleryController@userGalleries');
+            Route::post('/store/{galleryId}', 'Api\GalleryController@store');
+            Route::delete('/delete/{galleryId}', 'Api\GalleryController@delete');
+        });
+
+        Route::group(['prefix' => 'vendor'], function () {
+            Route::get('/user-vendor', 'Api\VendorController@userVendors');
+            Route::post('/store/{conceptId}', 'Api\VendorController@store');
+            Route::delete('/delete/{conceptId}', 'Api\VendorController@delete');
+        });
                        
         Route::group(['prefix' => 'concepts'], function () {
             Route::get('/', 'Api\ConceptController@index');
+            Route::get('/list-concepts', 'Api\ConceptController@listConcepts');
             Route::post('/store', 'Api\ConceptController@store');
             Route::patch('/update/{id}', 'Api\ConceptController@update');
             Route::delete('/delete/{id}', 'Api\ConceptController@delete');
@@ -103,10 +119,19 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'user'], function () {
             Route::get('/show/{code}', 'Api\UserController@show');
             Route::patch('/update/{code}', 'Api\UserController@update');
+            Route::post('/upload-photo-profile/{code}', 'Api\UserController@updatePhotoProfile');
             Route::post('/upload-photo/{code}', 'Api\UserController@updatePhoto');
+            Route::post('/change-password', 'Api\UserController@changePassword');
             Route::delete('/delete-photo/{code}', 'Api\UserController@deletePhoto');
+            Route::delete('/delete-photo-profile/{code}', 'Api\UserController@deletePhotoProfile');
             Route::patch('/re-send-relation/{id}', 'Api\UserController@resendRegisterRelation');
             Route::patch('/update/relation/{code}', 'Api\UserController@updateRelation');
+        });
+
+        Route::group(['prefix' => 'concept-detail'], function () {
+            Route::get('/', 'Api\ConceptDetailController@index');
+            Route::post('/store', 'Api\ConceptDetailController@store');
+            Route::delete('/delete/{id}', 'Api\ConceptDetailController@delete');
         });
     });
     

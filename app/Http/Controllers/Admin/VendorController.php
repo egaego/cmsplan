@@ -15,14 +15,15 @@ use Session;
 class VendorController extends Controller
 {
 	protected $rules = [
-        'category' => 'required',
+        'concept_id' => 'required',
 		'name' => 'required',
         'file' => 'required|file|min:1|max:50000|image',
         'thumbnail_file' => 'required|file|min:1|max:50000|image',
 		'status' => 'required',
-		'address' => 'required',
-		'phone' => 'required',
-		'website' => 'required',
+        'address' => 'required',
+        'price' => 'required',
+        'phone' => 'required',
+        'email' => 'required',
 		'instagram' => 'required',
 		'order' => 'required',
 	];

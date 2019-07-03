@@ -131,7 +131,7 @@ class AuthController extends Controller
         $validator = \Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:user,email',
-            'gender' => 'nullable|in:'.User::GENDER_MALE.','.User::GENDER_FEMALE,
+            // 'gender' => 'nullable|in:'.User::GENDER_MALE.','.User::GENDER_FEMALE,
             //'phone' => 'required',
             'password' => 'required|min:6',
             'confirm_password' => 'required|min:6|same:password',
@@ -162,7 +162,7 @@ class AuthController extends Controller
             'firebase_token',
         ]));
         if (!$request->gender || $request->gender == null) {
-            $user->gender = User::GENDER_FEMALE;
+            $user->gender = User::GENDER_MALE;
         }
         $user->password = bcrypt($request->password);
         $user->registered_at = Carbon::now()->toDateTimeString();
@@ -220,7 +220,7 @@ class AuthController extends Controller
         $user->sendRegisterNotification();
         
         // insert first data
-        $user->insertFirstContentData();
+        // $user->insertFirstContentData();
         
         if ($user->gender == User::GENDER_MALE) {
             $relation = $user->maleUserRelation->toArray();

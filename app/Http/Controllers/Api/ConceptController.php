@@ -155,4 +155,20 @@ class ConceptController extends Controller
             'data' => $models
         ], 200);
     }
+
+    /**
+     * @param type $id = concept_id
+     * @param Request $request
+     * @return type
+     */
+    public function listConcepts(Request $request)
+    {
+        $models = Concept::with(['vendors'])->actived()->ordered()->get();
+        
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'data' => $models
+        ], 200);
+    }
 }

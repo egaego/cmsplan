@@ -41,11 +41,6 @@
                     </span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li>
-                        <li class="{!! (Request::is('admin/procedure*')) ? 'active' : '' !!}">
-                            <a href="{!! route('procedure.index') !!}">Procedure</a>
-                        </li>
-                    </li>
                     <li class="{!! (Request::is('admin/concept*')) ? 'active' : '' !!}">
                         <a href="{!! route('concept.index') !!}">Concept</a>
                     </li>
@@ -74,6 +69,14 @@
                         <i class="ti-list-ol"></i>
                     </span>
                     <span class="title">Vendors</span>
+                </a>
+            </li>
+            <li class="nav-item  {{ (Request::is('admin/gallery*')) ? 'active' : '' }}">
+                <a href="{{ route('gallery.index') }}">
+                    <span class="icon-holder">
+                        <i class="ti-list-ol"></i>
+                    </span>
+                    <span class="title">Galleries</span>
                 </a>
             </li>
             <li class="nav-item  {{ (Request::is('admin/message*')) ? 'active' : '' }}">

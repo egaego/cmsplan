@@ -16,7 +16,8 @@ use Session;
 class ConceptController extends Controller
 {
 	protected $rules = [
-		'name' => 'required',
+        'name' => 'required',
+        'file' => 'required|file|min:1|max:50000|image',
 		'status' => 'required',
 		'order' => 'required',
 	];
@@ -39,7 +40,6 @@ class ConceptController extends Controller
      */
     public function create()
     {
-		
         return view('admin.concept.create');
     }
 
@@ -68,33 +68,14 @@ class ConceptController extends Controller
 			$model->file = $filename;
 		}
         
-		if (isset($request->thumbnail_file)) {
-			$files = $request->file('thumbnail_file');
-			$filename = $model->generateThumbnailFilename($files->getClientOriginalExtension());
-			$files->move($model->getPath(), $filename);
-            $img = new ImageResize($model->getPath() . $filename);
-            $img->resizeToWidth(500);
-            $img->save($model->getPath() . $filename);
-			$model->thumbnail_file = $filename;
-		}
-        
-        if ($model->thumbnail_file == null && $model->file == null) {
+        if ($model->file == null) {
 			Session::flash('message', 'Image wajib diisi!'); 
 			return response()->redirectToRoute('concept.create');
 		}
         
 		$model->save();
 		
-		if (isset($request->concept_category)) {
-			foreach ($request->concept_category as $conceptCategory) {
-				$conceptHasCategory = new ConceptHasCategory();
-				$conceptHasCategory->concept_id = $model->id;
-				$conceptHasCategory->concept_category_id = $conceptCategory;
-				$conceptHasCategory->save();
-			}
-		}
-		
-        Session::flash('success', 'Concept added!');
+		Session::flash('success', 'Concept added!');
         
         return redirect('admin/concept');
     }
@@ -144,7 +125,19 @@ class ConceptController extends Controller
 		
         $requestData = $request->all();
 		
-		$model->fill($requestData);
+        $model->fill($requestData);
+		$oldFile = $model->file;
+        $filename = null;
+		if (isset($request->file)) {
+			$files = $request->file('file');
+            $model->deleteFile($oldFile);
+			$filename = $model->generateFilename($files->getClientOriginalExtension());
+			$files->move($model->getPath(), $filename);
+            $img = new ImageResize($model->getPath() . $filename);
+            $img->resizeToWidth(1280);
+            $img->save($model->getPath() . $filename);
+			$model->file = $filename;
+		}
         $model->save();
 		
         Session::flash('success', 'Concept updated!');
@@ -161,7 +154,9 @@ class ConceptController extends Controller
      */
     public function destroy($id)
     {
-        return redirect('admin/concept');
+        $model = Concept::findOrFail($id);
+        $model->deleteAllFiles();
+        $model->delete();
 		
         Session::flash('success', 'Concept deleted!');
 
@@ -184,8 +179,8 @@ class ConceptController extends Controller
             })
             ->addColumn('action', function ($model) {
                 return //'<a href="concept/'.$model->id.'" class="btn btn-xs btn-success rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-eye"></i></a> '
-						 '<a href="concept/'.$model->id.'/edit" class="btn btn-xs btn-primary rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-pencil"></i></a> ';
-						//. '<a onclick="modalDelete('.$model->id.')" class="btn btn-xs btn-danger rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.delete') .'"><i class="fa fa-trash"></i></a>';
+						 '<a href="concept/'.$model->id.'/edit" class="btn btn-xs btn-primary rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-pencil"></i></a> '
+						. '<a onclick="modalDelete('.$model->id.')" class="btn btn-xs btn-danger rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.delete') .'"><i class="fa fa-trash"></i></a>';
             });
 
         if ($keyword = $request->get('search')['value']) {

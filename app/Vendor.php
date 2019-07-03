@@ -24,14 +24,18 @@ class Vendor extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'category',
+        'concept_id',
         'name',
         'description',
         'file',
         'address',
+        'latitude',
+        'longitude',
         'phone',
+        'email',
         'instagram',
-        'website',
+        'facebook',
+        'price',
         'status',
         'order',
         'created_at',
@@ -65,6 +69,11 @@ class Vendor extends BaseModel
         }
         $this->setPath($path);
         $this->setThumbPath($pathThumb);
+    }
+
+    public function concept()
+    {
+        return $this->hasOne('\App\Concept', 'id', 'concept_id');
     }
     
     public function vendorDetails()
