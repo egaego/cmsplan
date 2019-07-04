@@ -23,7 +23,6 @@
             </li>
             @php
             $requestMasterData = (
-                    Request::is('admin/procedure*') ||
                     Request::is('admin/concept*') ||
                     Request::is('admin/term-of-use*') ||
                     Request::is('admin/privacy-policy*') ||

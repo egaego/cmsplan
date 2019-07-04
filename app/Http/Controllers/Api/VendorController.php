@@ -10,6 +10,7 @@ use App\UserFavoriteVendor;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use DB;
 
 class VendorController extends Controller
 {
@@ -142,15 +143,24 @@ class VendorController extends Controller
 			], 401);
         }
 
-        $models = Vendor::select(['vendor.*'])->join('user_favorite_vendor', 'user_favorite_vendor.vendor_id', '=', 'vendor.id')
+        $models = Vendor::select(['vendor.*', DB::raw('concept.name AS category')])->join('user_favorite_vendor', 'user_favorite_vendor.vendor_id', '=', 'vendor.id')
+            ->join('concept', 'concept.id', '=', 'vendor.concept_id')
             ->where('user_favorite_vendor.user_id', $user->id)
             ->orderBy('user_favorite_vendor.created_at', 'DESC')
             ->get();
+        $result = [];
+        foreach ($models as $key => $model) {
+            $gallery = UserFavoriteVendor::where('user_id', $user->id)
+                ->where('vendor_id', $model->id)
+                ->first();
+            $result[$key] = $model;
+            $result[$key]['is_favorite'] = !$gallery ? 0 : 1;
+        }
         
         return response()->json([
             'status' => 200,
             'message' => 'success',
-            'data' => $models
+            'data' => $result
         ], 200);
     }
 }

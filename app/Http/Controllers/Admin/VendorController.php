@@ -19,6 +19,7 @@ class VendorController extends Controller
 		'name' => 'required',
         'file' => 'required|file|min:1|max:50000|image',
         'thumbnail_file' => 'required|file|min:1|max:50000|image',
+        'avatar' => 'required|file|min:1|max:50000|image',
 		'status' => 'required',
         'address' => 'required',
         'price' => 'required',
@@ -81,6 +82,15 @@ class VendorController extends Controller
             $img = new ImageResize($model->getThumbPath() . $filename);
             $img->resizeToWidth(480);
             $img->save($model->getThumbPath() . $filename);
+        }
+        if (isset($request->avatar)) {
+            $files = $request->file('avatar');
+            $filename = $model->generateFilename($files->getClientOriginalExtension());
+			$files->move($model->getPath(), $filename);
+            $img = new ImageResize($model->getPath() . $filename);
+            $img->resizeToWidth(480);
+            $img->save($model->getPath() . $filename);
+            $model->avatar = $filename;
 		}
 		$model->save();
         
@@ -138,6 +148,7 @@ class VendorController extends Controller
 		
 		$model->fill($requestData);
         $oldFile = $model->file;
+        $oldAvatar = $model->avatar;
         $filename = null;
 		if (isset($request->file)) {
 			$files = $request->file('file');
@@ -157,6 +168,16 @@ class VendorController extends Controller
             $img = new ImageResize($model->getThumbPath() . $filename);
             $img->resizeToWidth(480);
             $img->save($model->getThumbPath() . $filename);
+        }
+        if (isset($request->avatar)) {
+            $files = $request->file('avatar');
+            $model->deleteAvatar($oldAvatar);
+            $filename = $model->generateFilename($files->getClientOriginalExtension());
+			$files->move($model->getPath(), $filename);
+            $img = new ImageResize($model->getPath() . $filename);
+            $img->resizeToWidth(480);
+            $img->save($model->getPath() . $filename);
+            $model->avatar = $filename;
 		}
 		$model->save();
 		

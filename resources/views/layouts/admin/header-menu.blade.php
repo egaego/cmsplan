@@ -88,7 +88,7 @@
     <footer class="content-footer">
         <div class="footer">
             <div class="copyright">
-                <span>Copyright © 2018 {!! date('Y') == '2018' ? '' : '- ' . date('Y')   !!} <a href="http://hendrign.id" target="_blank"><b class="text-dark">Hendri Gunawan</b></a>. All rights reserved.</span>
+                <span>Copyright © 2018 {!! date('Y') == '2018' ? '' : '- ' . date('Y')   !!} <a href="http://planyourdays.id" target="_blank"><b class="text-dark">Plan Your Days</b></a>. All rights reserved.</span>
             </div>
         </div>
     </footer>

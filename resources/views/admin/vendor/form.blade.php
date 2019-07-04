@@ -48,6 +48,16 @@
     {!! $errors->first('thumbnail_file', '<p class="help-block">:message</p>') !!}
 </div>
 
+<div aria-required="true" class="form-group required form-group-default {{ $errors->has('avatar') ? 'has-error' : ''}}">
+    {!! Form::label('avatar', 'Avatar') !!}
+    @if(isset($model))
+        <br/>
+        {!! $model->getAvatarImg() !!}
+    @endif
+    {!! Form::file('avatar', ['class' => 'form-control']) !!}
+    {!! $errors->first('avatar', '<p class="help-block">:message</p>') !!}
+</div>
+
 <div aria-required="true" class="form-group required form-group-default {{ $errors->has('address') ? 'has-error' : ''}}">
     {!! Form::label('address', 'Address') !!}
     {!! Form::textarea('address', null, ['class' => 'form-control']) !!}

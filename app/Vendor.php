@@ -85,6 +85,11 @@ class Vendor extends BaseModel
     {
         return url(self::UPLOAD_DESTINATION_PATH . $this->file);
     }
+
+    public function getAvatarUrl()
+    {
+        return url(self::UPLOAD_DESTINATION_PATH . $this->avatar);
+    }
     
     public function getFileThumbUrl()
     {
@@ -104,6 +109,15 @@ class Vendor extends BaseModel
     {
         if ($this->file != null) {
             return "<img src='{$this->getFileUrl()}' width='100%' />";
+        }
+        
+        return null;
+    }
+
+    public function getAvatarImg()
+    {
+        if ($this->file != null) {
+            return "<img src='{$this->getAvatarUrl()}' width='150' />";
         }
         
         return null;
@@ -143,6 +157,14 @@ class Vendor extends BaseModel
         }
         @unlink($this->getPath() . $file);
     }
+
+    public function deleteAvatar($file = null)
+    {
+        if ($file == null) {
+            $file = $this->avatar;
+        }
+        @unlink($this->getPath() . $file);
+    }
     
     public function deleteThumbFile($file = null)
     {
@@ -155,7 +177,9 @@ class Vendor extends BaseModel
     public function deleteAllFiles()
     {
         $this->deleteFile();
+        $this->deleteAvatar();
         $this->deleteThumbFile();
+        
         foreach ($this->vendorDetails as $detail) :
             $detail->deleteFileAndThumb();
         endforeach;
