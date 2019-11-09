@@ -51,7 +51,14 @@ Route::group(['prefix' => 'v1'], function () {
     });
     
     Route::group(['middleware' => ['jwt.auth']], function () {
-                       
+
+        Route::get('/list-bank', 'Api\RequestController@listBank');
+
+        Route::group(['prefix' => 'transaction'], function () {
+            Route::post('/store', 'Api\RequestController@setupTransaction');
+            Route::get('/histories', 'Api\RequestController@transactionHistory');
+        });
+
         Route::group(['prefix' => 'contents'], function () {
             Route::get('/{conceptId}/{isCustomConcept}', 'Api\ContentController@index');
             Route::post('/store/{conceptId}/{isCustomConcept}', 'Api\ContentController@store');

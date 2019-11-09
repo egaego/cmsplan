@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Eventviva\ImageResize;
 
 class SiteController extends Controller
 {
@@ -103,6 +104,67 @@ class SiteController extends Controller
         $user->save();
         
         \Session::flash('success', 'Reset Password Sukses');
+        
+        return redirect('success');
+    }
+
+    public function transactionConfirmation($token, Request $request)
+    {
+        if ($token == null) {
+            abort(404, 'Page is not found.');
+        }
+
+        $token = base64_decode($token);
+        
+        $transaction = \App\Transaction::where('code', $token)
+                ->first();
+        if (!$transaction) {
+            abort(404, 'Page is not found.');
+        }
+
+        
+        $webRealUrl = url('transaction-confirmation/' . $token);
+        $iosUrlScheme = $androidUrlScheme = 'agendanikah://transaction-confirmation?token=' . $token;
+        
+        return view('web.site.transaction-confirmation', compact('transaction', 'relation', 'webRealUrl', 'iosUrlScheme', 'androidUrlScheme'));
+    }
+    
+    public function proccessTransactionConfirmation(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|file|min:1|max:50000|image',
+            'bank_id' => 'required',
+            'user_bank_account_name' => 'required',
+            'user_account_holder' => 'required',
+            'user_account_number' => 'required',
+            'total' => 'required',
+        ]);
+
+        $transaction = \App\Transaction::where('code', $request->code)
+                ->first();
+        
+        if (!$transaction) {
+            abort(404, 'Page is not found.');
+        }
+        $transaction->status = \App\Transaction::STATUS_CONFIRMED;
+        $transaction->save();
+
+        $model = new \App\TransactionPayment;
+        $model->fill($request->all());
+        $model->user_id = $transaction->user_id;
+        $model->transaction_id = $transaction->id;
+        if (isset($request->file)) {
+			$files = $request->file('file');
+			$filename = $model->generateFilename($files->getClientOriginalExtension());
+			$files->move($model->getPath(), $filename);
+            $img = new ImageResize($model->getPath() . $filename);
+            $img->resizeToWidth(1280);
+            $img->save($model->getPath() . $filename);
+            $model->file = $filename;
+        }
+        $model->save();
+        
+        \Session::flash('success', 'Konfirmasi Sukses');
         
         return redirect('success');
     }

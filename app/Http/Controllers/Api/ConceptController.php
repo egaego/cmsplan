@@ -163,7 +163,7 @@ class ConceptController extends Controller
      */
     public function listConcepts(Request $request)
     {
-        $models = Concept::with(['vendors'])->actived()->ordered()->get();
+        $models = Concept::with(['vendors', 'vendors.vendorPackages', 'vendors.vendorActiveVoucher'])->actived()->ordered()->get();
         
         return response()->json([
             'status' => 200,

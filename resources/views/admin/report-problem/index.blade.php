@@ -1,35 +1,27 @@
 @extends('layouts.admin.main')
-@section('headerTitle', 'Dashboard')
+@section('headerTitle', 'Report Problem')
+@section('pageTitle', 'Report Problem')
 
 @section('content')
-<div class="container-fluid">
+    
     <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <div class="widget card">
+        <div class="col-md-12">
+            <div class="card">
                 <div class="card-block">
-                    <h5 class="card-title">Dashboard, Hi {{ \Auth::user()->name }}</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12 col-md-12">
-            <div class="widget card">
-                <div class="card-block">
-                    <div class="pull-left mrg-btm-20">
-                        <h4>Transaction Confirmed</h4>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table id="pending-table" class="table table-lg table-hover" width="100%">
+                    <input type="hidden" id="drs" name="drange"/>
+                    <input type="hidden" id="delete_value" name="delete_value"/>
+                    <div class="table-overflow">
+                        <table id="report-table" class="table table-lg table-hover" width="100%">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Code</th>
+                                    <th>*</th>
                                     <th>User</th>
-                                    <th>Grand Total</th>
-                                    <th>Updated at</th>
-                                    <td></td>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Updated At</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                         </table>
@@ -38,14 +30,12 @@
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('script')
-<script src="{{ asset('admin-assets/js/dashboard/dashboard.js') }}"></script>
 <script>
 var oTable;
-oTable = $('#pending-table').DataTable({
+oTable = $('#report-table').DataTable({
     processing: true,
     serverSide: true,
     dom: 'lBfrtip',
@@ -59,7 +49,7 @@ oTable = $('#pending-table').DataTable({
                 $(win.document.body)
                     .css( 'padding', '2px' )
                     .prepend(
-                        '<img src="{{asset('img/logo.png')}}" style="float:right; top:0; left:0;height: 40px;right: 10px;background: #101010;padding: 8px;border-radius: 4px" /><h5 style="font-size: 9px;margin-top: 0px;"><br/><font style="font-size:14px;margin-top: 5px;margin-bottom:20px;"> Report Concept</font><br/><br/><font style="font-size:8px;margin-top:15px;">{{date('Y-m-d h:i:s')}}</font></h5><br/><br/>'
+                        '<img src="{{asset('img/logo.png')}}" style="float:right; top:0; left:0;height: 40px;right: 10px;background: #101010;padding: 8px;border-radius: 4px" /><h5 style="font-size: 9px;margin-top: 0px;"><br/><font style="font-size:14px;margin-top: 5px;margin-bottom:20px;"> Report Vendor</font><br/><br/><font style="font-size:8px;margin-top:15px;">{{date('Y-m-d h:i:s')}}</font></h5><br/><br/>'
                     );
 
 
@@ -95,22 +85,24 @@ oTable = $('#pending-table').DataTable({
     },
     lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
     ajax: {
-    url: '{!! route('home.transaction-pending.data') !!}',
+    url: '{!! route('report-problem.data') !!}',
         data: function (d) {
             d.range = $('input[name=drange]').val();
         }
     },
     columns: [
 		{ data: "rownum", name: "rownum" },
-		{ data: "code", name: "code" },
 		{ data: "user_id", name: "user_id" },
-		{ data: "grand_total", name: "grand_total" },
+		{ data: "category", name: "category" },
+		{ data: "description", name: "description" },
+        { data: "status", name: "status" },
+		{ data: "created_at", name: "created_at", visible:false },
 		{ data: "updated_at", name: "updated_at" },
         { data: "action", name: "action", searchable: false, orderable: false },
     ],
 }).on( 'processing.dt', function ( e, settings, processing ) {if(processing){Pace.start();} else {Pace.stop();}});
 
-$("#pending-table_wrapper > .dt-buttons").appendTo("div.export-options-container");
+$("#report-table_wrapper > .dt-buttons").appendTo("div.export-options-container");
 
 $('#formsearch').submit(function () {
     oTable.search( $('#search-table').val() ).draw();
@@ -118,5 +110,23 @@ $('#formsearch').submit(function () {
 } );
 
 oTable.page.len(25).draw();
+
+function modalDelete(id) {
+    $('#modal-delete').modal('show');
+    $('#delete_value').val(id);
+}
+
+function deleteRecord(){
+    $('#modal-delete').modal('hide');
+    var id = $('#delete_value').val();
+    $.ajax({
+        url: '{{url("admin/report-problem")}}' + "/" + id + '?' + $.param({"_token" : '{{ csrf_token() }}' }),
+        type: 'DELETE',
+        complete: function(data) {
+            oTable.draw();
+        }
+    });
+}
+
 </script>
 @endpush

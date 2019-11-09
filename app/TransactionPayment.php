@@ -4,19 +4,17 @@ namespace App;
 
 use Carbon\Carbon;
 
-class Vendor extends BaseModel
-{
+class TransactionPayment extends BaseModel
+{   
     const UPLOAD_DESTINATION_PATH = 'files/vendors/';
     const UPLOAD_DESTINATION_PATH_THUMB = 'files/vendors/thumbs/';
-    
-    private $_thumbPath;
-    
+
     /**
      * The table associated with the model.
      * 
      * @var string
      */
-    protected $table = 'vendor';
+    protected $table = 'transaction_payment';
     
     /**
      * The attributes that are mass assignable.
@@ -24,20 +22,14 @@ class Vendor extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'concept_id',
-        'name',
-        'description',
-        'file',
-        'address',
-        'latitude',
-        'longitude',
-        'phone',
-        'email',
-        'instagram',
-        'facebook',
-        'price',
-        'status',
-        'order',
+        'transaction_id',
+        'user_id',
+        'bank_id',
+        'evidence_transfer',
+        'user_bank_account_name',
+        'user_account_holder',
+        'user_account_number',
+        'total',
         'created_at',
         'updated_at',
     ];
@@ -51,55 +43,35 @@ class Vendor extends BaseModel
     ];
     
     protected $with = [
-        'vendorDetails',
-        'vendorPackages',
-        'vendorVouchers',
-        'vendorActiveVoucher'
     ];
+
+    public function transaction()
+    {
+        return $this->hasOne('\App\Transaction', 'id', 'transaction_id');
+    }
     
+    public function user()
+    {
+        return $this->hasOne('\App\User', 'id', 'user_id');
+    }
+
+    public function bank()
+    {
+        return $this->hasOne('\App\Bank', 'id', 'bank_id');
+    }
+
     public function __construct(array $attributes = array())
     {
         parent::__construct($attributes);
         
         $path = public_path(self::UPLOAD_DESTINATION_PATH);
-        $pathThumb = public_path(self::UPLOAD_DESTINATION_PATH_THUMB);
 
         if(!is_dir($path)) {
             \File::makeDirectory($path, 0755);
         }
-        if(!is_dir($pathThumb)) {
-            \File::makeDirectory($pathThumb, 0755);
-        }
         $this->setPath($path);
-        $this->setThumbPath($pathThumb);
     }
 
-    public function concept()
-    {
-        return $this->hasOne('\App\Concept', 'id', 'concept_id');
-    }
-    
-    public function vendorDetails()
-    {
-        return $this->hasMany('\App\VendorDetail', 'vendor_id', 'id');
-    }
-
-    public function vendorPackages()
-    {
-        return $this->hasMany('\App\VendorPackage', 'vendor_id', 'id');
-    }
-
-    public function vendorVouchers()
-    {
-        return $this->hasMany('\App\VendorVoucher', 'vendor_id', 'id');
-    }
-
-    public function vendorActiveVoucher()
-    {
-        return $this->hasOne('\App\VendorVoucher', 'vendor_id', 'id')
-            ->where('vendor_voucher.status', \App\VendorVoucher::STATUS_ACTIVE);
-    }
-    
     public function getFileUrl()
     {
         return url(self::UPLOAD_DESTINATION_PATH . $this->file);
@@ -133,10 +105,10 @@ class Vendor extends BaseModel
         return null;
     }
 
-    public function getAvatarImg()
+    public function getFileHtml()
     {
         if ($this->file != null) {
-            return "<img src='{$this->getAvatarUrl()}' width='150' />";
+            return "<a href='{$this->getFileUrl()}' target='_blank'><img src='{$this->getFileUrl()}' width='100%' /></a>";
         }
         
         return null;
@@ -176,14 +148,6 @@ class Vendor extends BaseModel
         }
         @unlink($this->getPath() . $file);
     }
-
-    public function deleteAvatar($file = null)
-    {
-        if ($file == null) {
-            $file = $this->avatar;
-        }
-        @unlink($this->getPath() . $file);
-    }
     
     public function deleteThumbFile($file = null)
     {
@@ -191,18 +155,5 @@ class Vendor extends BaseModel
             $file = $this->file;
         }
         @unlink($this->getThumbPath() . $file);
-    }
-    
-    public function deleteAllFiles()
-    {
-        $this->deleteFile();
-        $this->deleteAvatar();
-        $this->deleteThumbFile();
-        
-        foreach ($this->vendorDetails as $detail) :
-            $detail->deleteFileAndThumb();
-        endforeach;
-        
-        return true;
     }
 }

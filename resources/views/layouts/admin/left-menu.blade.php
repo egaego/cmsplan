@@ -24,6 +24,7 @@
             @php
             $requestMasterData = (
                     Request::is('admin/concept*') ||
+                    Request::is('admin/bank*') ||
                     Request::is('admin/term-of-use*') ||
                     Request::is('admin/privacy-policy*') ||
                     Request::is('admin/about-us*')
@@ -42,6 +43,9 @@
                 <ul class="dropdown-menu">
                     <li class="{!! (Request::is('admin/concept*')) ? 'active' : '' !!}">
                         <a href="{!! route('concept.index') !!}">Concept</a>
+                    </li>
+                    <li class="{!! (Request::is('admin/bank*')) ? 'active' : '' !!}">
+                        <a href="{!! route('bank.index') !!}">Bank</a>
                     </li>
                     <li class="{!! (Request::is('admin/term-of-use*')) ? 'active' : '' !!}">
                         <a href="{!! route('term-of-use.index') !!}">Term of Use</a>
@@ -62,6 +66,14 @@
                     <span class="title">Partners</span>
                 </a>
             </li>
+            <li class="nav-item {{ (Request::is('admin/transaction*')) ? 'active' : '' }}">
+                <a href="{{ route('transaction.index') }}">
+                    <span class="icon-holder">
+                        <i class="fa fa-list"></i>
+                    </span>
+                    <span class="title">Transactions</span>
+                </a>
+            </li>
             <li class="nav-item  {{ (Request::is('admin/vendor*')) ? 'active' : '' }}">
                 <a href="{{ route('vendor.index') }}">
                     <span class="icon-holder">
@@ -76,6 +88,14 @@
                         <i class="ti-list-ol"></i>
                     </span>
                     <span class="title">Galleries</span>
+                </a>
+            </li>
+            <li class="nav-item  {{ (Request::is('admin/report-problem*')) ? 'active' : '' }}">
+                <a href="{{ route('report-problem.index') }}">
+                    <span class="icon-holder">
+                        <i class="ti-list-ol"></i>
+                    </span>
+                    <span class="title">Report Problem</span>
                 </a>
             </li>
             <li class="nav-item  {{ (Request::is('admin/message*')) ? 'active' : '' }}">

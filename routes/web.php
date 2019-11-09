@@ -17,6 +17,8 @@ Route::get('/register-relation/{token}', 'Web\\SiteController@registerRequest');
 Route::post('/register-relation', 'Web\\SiteController@proccessRegisterRequest');
 Route::get('/reset-your-password/{token}', 'Web\\SiteController@resetPassword');
 Route::post('/reset-your-password/{token}', 'Web\\SiteController@proccessResetPassword');
+Route::get('/transaction-confirmation/{token}', 'Web\\SiteController@transactionConfirmation');
+Route::post('/transaction-confirmation', 'Web\\SiteController@proccessTransactionConfirmation');
 
 Route::get('/success', 'Web\\SiteController@success');
 
@@ -71,15 +73,72 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     Route::resource('/vendor', 'Admin\\VendorController');
     
     Route::get('/gallery/data', ['as' => 'gallery.data', 'uses' => 'Admin\\GalleryController@listIndex']);
-	Route::resource('/gallery', 'Admin\\GalleryController');
+    Route::resource('/gallery', 'Admin\\GalleryController');
     
-    Route::get('/vendor-detail/data/{id}', ['as' => 'vendor-detail.data', 'uses' => 'Admin\\VendorDetailController@listIndex']);
-    Route::get('/vendor-detail/create/{vendorId}', ['as' => 'vendor-detail.create', 'uses' => 'Admin\\VendorDetailController@create']);
-    Route::post('/vendor-detail/create/{vendorId}', ['as' => 'vendor-detail.store', 'uses' => 'Admin\\VendorDetailController@store']);
-    Route::get('/vendor-detail/{id}/edit', ['as' => 'vendor-detail.edit', 'uses' => 'Admin\\VendorDetailController@edit']);
-    Route::patch('/vendor-detail/{id}', ['as' => 'vendor-detail.update', 'uses' => 'Admin\\VendorDetailController@update']);
-    Route::delete('/vendor-detail/{id}', ['as' => 'vendor-detail.delete', 'uses' => 'Admin\\VendorDetailController@delete']);
+    Route::group(['prefix' =>'vendor-detail'], function() {
+        Route::get('/data/{id}', ['as' => 'vendor-detail.data', 'uses' => 'Admin\\VendorDetailController@listIndex']);
+        Route::get('/create/{vendorId}', ['as' => 'vendor-detail.create', 'uses' => 'Admin\\VendorDetailController@create']);
+        Route::post('/create/{vendorId}', ['as' => 'vendor-detail.store', 'uses' => 'Admin\\VendorDetailController@store']);
+        Route::get('/{id}/edit', ['as' => 'vendor-detail.edit', 'uses' => 'Admin\\VendorDetailController@edit']);
+        Route::patch('/{id}', ['as' => 'vendor-detail.update', 'uses' => 'Admin\\VendorDetailController@update']);
+        Route::delete('/{id}', ['as' => 'vendor-detail.delete', 'uses' => 'Admin\\VendorDetailController@delete']);
+    });
+
+    Route::group(['prefix' =>'vendor-voucher'], function() {
+        Route::get('/data/{id}', ['as' => 'vendor-voucher.data', 'uses' => 'Admin\\VendorVoucherController@listIndex']);
+        Route::get('/create/{vendorId}', ['as' => 'vendor-voucher.create', 'uses' => 'Admin\\VendorVoucherController@create']);
+        Route::post('/create/{vendorId}', ['as' => 'vendor-voucher.store', 'uses' => 'Admin\\VendorVoucherController@store']);
+        Route::get('/{id}/edit', ['as' => 'vendor-voucher.edit', 'uses' => 'Admin\\VendorVoucherController@edit']);
+        Route::patch('/{id}', ['as' => 'vendor-voucher.update', 'uses' => 'Admin\\VendorVoucherController@update']);
+        Route::delete('/{id}', ['as' => 'vendor-voucher.delete', 'uses' => 'Admin\\VendorVoucherController@delete']);
+    });
+
+    Route::group(['prefix' =>'vendor-package'], function() {
+        Route::get('/data/{id}', ['as' => 'vendor-package.data', 'uses' => 'Admin\\VendorPackageController@listIndex']);
+        Route::get('/create/{vendorId}', ['as' => 'vendor-package.create', 'uses' => 'Admin\\VendorPackageController@create']);
+        Route::post('/create/{vendorId}', ['as' => 'vendor-package.store', 'uses' => 'Admin\\VendorPackageController@store']);
+        Route::get('/{id}/edit', ['as' => 'vendor-package.edit', 'uses' => 'Admin\\VendorPackageController@edit']);
+        Route::patch('/{id}', ['as' => 'vendor-package.update', 'uses' => 'Admin\\VendorPackageController@update']);
+        Route::delete('/{id}', ['as' => 'vendor-package.delete', 'uses' => 'Admin\\VendorPackageController@delete']);
+    });
+
+    Route::group(['prefix' =>'transaction'], function() {
+        Route::get('/data', ['as' => 'transaction.data', 'uses' => 'Admin\\TransactionController@listIndex']);
+        Route::get('/{id}', ['as' => 'transaction.show', 'uses' => 'Admin\\TransactionController@show']);
+        Route::patch('/{id}', ['as' => 'transaction.update', 'uses' => 'Admin\\TransactionController@update']);
+        Route::get('/edit/{id}', ['as' => 'transaction.edit', 'uses' => 'Admin\\TransactionController@edit']);
+        Route::get('/', ['as' => 'transaction.index', 'uses' => 'Admin\\TransactionController@index']);
+    });
+
+    Route::group(['prefix' =>'transaction-detail'], function() {
+        Route::get('/data/{id}', ['as' => 'transaction-detail.data', 'uses' => 'Admin\\TransactionDetailController@listIndex']);
+        Route::get('/show/{id}', ['as' => 'transaction-detail.show', 'uses' => 'Admin\\TransactionDetailController@show']);
+        Route::get('/edit/{id}', ['as' => 'transaction-detail.edit', 'uses' => 'Admin\\TransactionDetailController@edit']);
+        Route::get('/', ['as' => 'transaction-detail.index', 'uses' => 'Admin\\TransactionDetailController@index']);
+    });
+
+    Route::group(['prefix' =>'transaction-payment'], function() {
+        Route::get('/data/{id}', ['as' => 'transaction-payment.data', 'uses' => 'Admin\\TransactionPaymentController@listIndex']);
+        Route::get('/show/{id}', ['as' => 'transaction-payment.show', 'uses' => 'Admin\\TransactionPaymentController@show']);
+        Route::get('/', ['as' => 'transaction-payment.index', 'uses' => 'Admin\\TransactionPaymentController@index']);
+    });
+
+    Route::group(['prefix' =>'home'], function() {
+        Route::get('/transaction-pending', ['as' => 'home.transaction-pending.data', 'uses' => 'Admin\\DashboardController@transactionPending']);
+        Route::get('/show/{id}', ['as' => 'transaction-detail.show', 'uses' => 'Admin\\TransactionDetailController@show']);
+        Route::get('/edit/{id}', ['as' => 'transaction-detail.edit', 'uses' => 'Admin\\TransactionDetailController@edit']);
+        Route::get('/', ['as' => 'transaction-detail.index', 'uses' => 'Admin\\TransactionDetailController@index']);
+    });
+
+    Route::group(['prefix' =>'report-problem'], function() {
+        Route::get('/data', ['as' => 'report-problem.data', 'uses' => 'Admin\\ReportProblemController@listIndex']);
+        Route::get('/', ['as' => 'report-problem.index', 'uses' => 'Admin\\ReportProblemController@index']);
+        Route::delete('/{id}', ['as' => 'report-problem.delete', 'uses' => 'Admin\\ReportProblemController@delete']);
+    });
     
     Route::get('/message/data', ['as' => 'message.data', 'uses' => 'Admin\\MessageController@listIndex']);
-	Route::resource('/message', 'Admin\\MessageController');
+    Route::resource('/message', 'Admin\\MessageController');
+    
+    Route::get('/bank/data', ['as' => 'bank.data', 'uses' => 'Admin\\BankController@listIndex']);
+	Route::resource('/bank', 'Admin\\BankController');
 });

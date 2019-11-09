@@ -35,4 +35,21 @@ class ReportProblem extends BaseModel
      */
     protected $hidden = [
     ];
+
+    public function user() {
+        return $this->hasOne('\App\User', 'id', 'user_id');
+    }
+
+    public static function categoryLabels() {
+        return [
+            self::CATEGORY_DESIGN => 'Design',
+            self::CATEGORY_FUNCTION => 'Function',
+            self::CATEGORY_OTHER => 'Other',
+        ];
+    }
+
+    public function getCategoryLabel() {
+        $list = self::categoryLabels();
+        return $list[$this->category] ? $list[$this->category] : $this->category;
+    }
 }
