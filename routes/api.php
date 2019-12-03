@@ -22,7 +22,8 @@ use Illuminate\Http\Request;
 //    }
 //});
 Route::get('test', function() {
-App\ProcedurePreparation::sendPushNotification();
+$trx = \App\Transaction::find(1);
+$trx->sendPaymenInvoiceNotification();
 });
 Route::group(['prefix' => 'v1'], function () {
     
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['prefix' => 'gallery'], function () {
         Route::get('/', 'Api\GalleryController@index');
+        Route::get('/categories', 'Api\GalleryController@galleryConcepts');
     });
     
     Route::group(['middleware' => ['jwt.auth']], function () {

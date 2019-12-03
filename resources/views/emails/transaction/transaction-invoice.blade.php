@@ -175,7 +175,7 @@
                   <tr>
                     <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 10px;">
                       <p style="font-size: 14px; font-weight: 400; line-height: 22px; color: #777777; padding: 0 30px;">
-                        Hai, Terima kasih atas kepercayaanmu kepada kami, Mohon segera lakukan pembayaran sebelum 1x24 Jam. Terima Kasih :)
+                        Hai {{ $user->name }}, Terima kasih atas kepercayaanmu kepada kami, Mohon segera lakukan pembayaran sebelum 1x24 Jam. Terima Kasih :)
                       </p>
                     </td>
                   </tr>
@@ -187,7 +187,7 @@
                             Invoice #
                           </td>
                           <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
-                            2345678
+                            {{ $model->code }}
                           </td>
                         </tr>
                         <tr>
@@ -195,7 +195,7 @@
                             Order Date
                           </td>
                           <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
-                            Nov. 12, 2019
+                            {{ \Carbon\Carbon::parse($model->created_at)->format('d M Y') }}
                           </td>
                         </tr>
                         <tr>
@@ -203,7 +203,7 @@
                             Customer
                           </td>
                           <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px;">
-                            Muhamad Ega
+                            {{ $model->user->name }}
                           </td>
                         </tr>
                         <tr>
@@ -211,7 +211,7 @@
                             Payment Option
                           </td>
                           <td width="25%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px 20px 10px;">
-                            Credit Card
+                          {{ $model->paymentType->name }}
                           </td>
                         </tr>
                         <tr>
@@ -222,18 +222,18 @@
                             IDR
                           </td>
                         </tr>
+                        @foreach ($model->transactionDetails as $detail)
                         <tr>
                           <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; padding: 20px 10px 5px 10px;">
-                            <span style="font-style: italic;">Arlica Decoration</span>
+                            <span style="font-style: italic;">{{ $detail->vendor->name }}</span>
                           </td>
-
                         </tr>
                         <tr>
                           <td width="75%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;">
-                            1000pax
+                            {{ $detail->vendorPackage->name }}
                           </td>
                           <td width="25%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px;">
-                            10.000.000 IDR
+                            {{ \App\Helpers\FormatConverter::rupiahFormat($detail->total) }} IDR
                           </td>
                         </tr>
                         <tr>
@@ -241,30 +241,18 @@
                             Potongan Harga
                           </td>
                           <td width="25%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px;">
-                            -1.000.000 IDR
+                            -{{ \App\Helpers\FormatConverter::rupiahFormat($detail->voucher_discont) }} IDR
                           </td>
                         </tr>
                         <tr>
-                          <td width="75%" align="left" style="border-bottom: 2px solid #eeeeee; font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;">
-
+                          <td width="75%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;">
+                            Grand Total
                           </td>
-                          <td width="25%" align="left" style="border-bottom: 2px solid #eeeeee; font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px;">
-
-                          </td>
-                        </tr>
-                        <tr>
-                          <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 700; line-height: 24px; padding: 20px 10px 5px 10px;">
-                            <span style="font-style: italic;">Mamih Catering</span>
+                          <td width="25%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 5px 10px;">
+                            {{ \App\Helpers\FormatConverter::rupiahFormat($detail->grand_total) }} IDR
                           </td>
                         </tr>
-                        <tr>
-                          <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 5px 10px;">
-                            400pax
-                          </td>
-                          <td width="25%" align="left" style=" font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 5px 10px;">
-                            5.000.000 IDR
-                          </td>
-                        </tr>
+                        @endforeach
                       </table>
                     </td>
                   </tr>
@@ -272,12 +260,20 @@
                   <tr>
                     <td align="left" style="padding-top: 20px;">
                       <table cellspacing="0" cellpadding="0" border="0" width="100%">
-                        <tr>
+                      <tr>
                           <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 2px solid #eeeeee; border-bottom: 2px solid #eeeeee;">
-                            TOTAL
+                            ADMIN FEE
                           </td>
                           <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 2px solid #eeeeee; border-bottom: 2px solid #eeeeee;">
-                            14.000.000 IDR
+                            {{ \App\Helpers\FormatConverter::rupiahFormat($model->admin_fee) }} IDR
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="75%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 2px solid #eeeeee; border-bottom: 2px solid #eeeeee;">
+                            GRAND TOTAL
+                          </td>
+                          <td width="25%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 2px solid #eeeeee; border-bottom: 2px solid #eeeeee;">
+                            {{ \App\Helpers\FormatConverter::rupiahFormat($model->grand_total) }} IDR
                           </td>
                         </tr>
                       </table>
@@ -306,92 +302,19 @@
                             <tr>
                             <td align="left" valign="top" width="300">
                             <![endif]-->
+                      @foreach (\App\Bank::actived()->get() as $bank)
                       <div class="mw-50" style="display:inline-block; padding-bottom: 15px; vertical-align:top; width:100%;">
 
                         <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
                           <tr>
                             <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 0 10px;">
-                              <p style="font-weight: 800;">BCA</p>
-                              <p>AN. Tio Mafaza<br>059876567<br>Cabang Jakarta Barat</p>
+                              <p style="font-weight: 800;">{{$bank->account_name}}</p>
+                              <p>AN. {{$bank->account_holder}}<br>{{$bank->account_number}}<br>{{$bank->account_branch}}</p>
                             </td>
                           </tr>
                         </table>
                       </div>
-                      <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                            <td align="left" valign="top" width="300">
-                            <![endif]-->
-                      <div class="mw-50" style="display:inline-block; padding-bottom: 15px; vertical-align:top; width:100%;">
-                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
-                          <tr>
-                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 0 10px;">
-                              <p style="font-weight: 800;">Mandiri</p>
-                              <p>AN. Tio Mafaza<br>1139483475948<br>Cabang Jakarta Barat</p>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                      <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                            </tr>
-                            </table>
-                            <![endif]-->
-                    </td>
-                  </tr>
-                </table>
-                <!--[if (gte mso 9)|(IE)]>
-                </td>
-                </tr>
-                </table>
-                <![endif]-->
-              </td>
-            </tr>
-            <tr>
-              <td align="center" height="100%" valign="top" width="100%" style="padding: 0 15px 55px 15px; background-color: #ffffff;" bgcolor="#ffffff">
-                <!--[if (gte mso 9)|(IE)]>
-                <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
-                <tr>
-                <td align="center" valign="top" width="600">
-                <![endif]-->
-                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
-                  <tr>
-                    <td align="center" valign="top" style="font-size:0;">
-                      <!--[if (gte mso 9)|(IE)]>
-                            <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
-                            <tr>
-                            <td align="left" valign="top" width="300">
-                            <![endif]-->
-                      <div class="mw-50" style="display:inline-block; padding-bottom: 15px; vertical-align:top; width:100%;">
-
-                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
-                          <tr>
-                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 0 10px;">
-                              <p style="font-weight: 800;">BRI</p>
-                              <p>AN. Tio Mafaza<br>1139483475948<br>Cabang Jakarta Barat</p>
-
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                      <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                            <td align="left" valign="top" width="300">
-                            <![endif]-->
-                      <div class="mw-50" style="display:inline-block; vertical-align:top; width:100%;">
-                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:300px;">
-                          <tr>
-                            <td align="left" valign="top" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 0 10px;">
-                              <p style="font-weight: 800;">CIMB</p>
-                              <p>AN. Tio Mafaza<br>1139483475948<br>Cabang Jakarta Barat</p>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                      <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                            </tr>
-                            </table>
-                            <![endif]-->
+                      @endforeach
                     </td>
                   </tr>
                 </table>
@@ -422,7 +345,7 @@
                       <table border="0" cellspacing="0" cellpadding="0">
                         <tr>
                           <td align="center" style="border-radius: 45px;" bgcolor="#F06EA9">
-                            <a href="http://healthplang.com/" target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-align: center; text-decoration: none; border-radius: 45px; background-color: #F06EA9; padding: 15px 30px 15px; border: none; display: block;">Konfirmasi Pembayaran</a>
+                            <a href="{{ $model->getConfirmationLink() }}" target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-align: center; text-decoration: none; border-radius: 45px; background-color: #F06EA9; padding: 15px 30px 15px; border: none; display: block;">Konfirmasi Pembayaran</a>
                           </td>
                         </tr>
                       </table>

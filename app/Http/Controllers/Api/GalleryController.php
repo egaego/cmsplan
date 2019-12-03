@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Gallery;
+use App\Concept;
 use App\UserGallery;
 use App\Helpers\FormatConverter;
 use App\Http\Controllers\Controller;
@@ -24,9 +25,14 @@ class GalleryController extends Controller
         } else {
             $user = new User();
         }
-        
+
+        $concept = $request->get('concept_id', null);
         
         $models = Gallery::inRandomOrder()->get();
+
+        if ($concept != null) {
+            $models = Gallery::where('concept_id', $concept)->inRandomOrder()->get();
+        }
 
         $result = [];
         foreach ($models as $key => $model) {
@@ -42,6 +48,27 @@ class GalleryController extends Controller
             'status' => 200,
             'message' => 'success',
             'data' => $result
+        ], 200);
+    }
+
+    /**
+     * @param type $id = concept_id
+     * @param Request $request
+     * @return type
+     */
+    public function galleryConcepts(Request $request)
+    {
+        if ($request->has('token')) {
+            $user = JWTAuth::parseToken()->authenticate();
+        } else {
+            $user = new User();
+        }
+        $models = Concept::actived()->inRandomOrder()->limit(3)->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'data' => $models
         ], 200);
     }
     

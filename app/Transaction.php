@@ -3,6 +3,9 @@
 namespace App;
 
 use Carbon\Carbon;
+use Mail;
+use App\Mail\PaymentSuccessNotification;
+use App\Mail\PaymentInvoiceNotification;
 
 class Transaction extends BaseModel
 {   
@@ -151,5 +154,9 @@ class Transaction extends BaseModel
     public static function generateCode()
     {
         return random_int(100000, 999999);
+    }
+
+    public function getConfirmationLink() {
+        return url('transaction-confirmation/' . base64_encode($this->code));
     }
 }

@@ -12,6 +12,11 @@
 */
 
 Route::get('/', 'Web\\SiteController@index');
+Route::get('test', function() {
+    $model = \App\Transaction::find(1);
+    $user = \App\User::find(2);
+    return view('emails.transaction.transaction-invoice', compact('model', 'user'));
+});
 
 Route::get('/register-relation/{token}', 'Web\\SiteController@registerRequest');
 Route::post('/register-relation', 'Web\\SiteController@proccessRegisterRequest');

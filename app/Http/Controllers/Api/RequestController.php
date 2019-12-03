@@ -167,6 +167,7 @@ class RequestController extends Controller
         $model->bank_id = $request->bank_id;
         $model->status = Transaction::STATUS_PENDING;
         $model->save();
+        $model->sendPaymenInvoiceNotification();
         
         return response()->json([
             'status' => 201,

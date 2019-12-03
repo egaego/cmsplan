@@ -24,6 +24,7 @@ class Gallery extends BaseModel
      * @var array
      */
     protected $fillable = [
+        'concept_id',
         'name',
         'file',
         'status',
@@ -54,6 +55,11 @@ class Gallery extends BaseModel
         }
         $this->setPath($path);
         $this->setThumbPath($pathThumb);
+    }
+
+    public function concept()
+    {
+        return $this->hasOne('\App\Concept', 'id', 'concept_id');
     }
     
     public function getFileUrl()
