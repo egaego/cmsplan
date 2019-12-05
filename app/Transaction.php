@@ -62,6 +62,10 @@ class Transaction extends BaseModel
         'paymentType'
     ];
 
+    protected $appends = [
+        'confirmation_link'
+    ];
+
     public function transactionDetails()
     {
         return $this->hasMany('\App\TransactionDetail', 'transaction_id', 'id');
@@ -156,7 +160,11 @@ class Transaction extends BaseModel
         return random_int(100000, 999999);
     }
 
+    public function getConfirmationLinkAttribute() {
+        return $this->getConfirmationLink();
+    }
+
     public function getConfirmationLink() {
-        return url('transaction-confirmation/' . base64_encode($this->code));
+        return url('transaction-confirmation/' . base64_encode($this->attributes['code']));
     }
 }

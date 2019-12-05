@@ -36,6 +36,7 @@ class ConceptDetailController extends Controller
             return response()->json([
                 'status' => 200,
                 'message' => 'success',
+                'admin_fee' => 0,
                 'total' => 0,
                 'data' => []
             ], 200);
@@ -45,14 +46,13 @@ class ConceptDetailController extends Controller
             ->where('transaction_id', $transaction->id)
             ->orderBy('created_at', 'DESC')->get();
 
-        $total = 0;
-        foreach ($models as $model) {
-            $total += $model->grand_total ? $model->grand_total : 0;
-        }
+        $adminFee = $transaction->admin_fee;
+        $total = $transaction->grand_total;
         
         return response()->json([
             'status' => 200,
             'message' => 'success',
+            'admin_fee' => $adminFee,
             'total' => $total,
             'data' => $models,
             'transaction_id' => $transaction->id
@@ -123,14 +123,15 @@ class ConceptDetailController extends Controller
             $total += $model->grand_total;
         }
         $transaction->total = $total;
-        $transaction->admin_fee = 0;
-        $transaction->grand_total = $total;
+        $transaction->admin_fee = rand(100, 1000);
+        $transaction->grand_total = $total + $transaction->admin_fee;
         $transaction->save();
         
         return response()->json([
             'status' => 201,
             'message' => 'Success',
             'data' => $details,
+            'admin_fee' => $transaction->admin_fee,
             'total' => $total,
             'transaction_id' => $transaction->id
         ], 201);
@@ -148,6 +149,7 @@ class ConceptDetailController extends Controller
         
         TransactionDetail::where('id', $id)->delete();
 
+        $transactionId = 0;
         $transaction = Transaction::where('user_id', $user->id)->where('status', Transaction::STATUS_DRAFT)->first();
         if (!$transaction) {
             return response()->json([
@@ -157,22 +159,28 @@ class ConceptDetailController extends Controller
                 'data' => []
             ], 200);
         }
+
+        $transactionId = $transaction->id;
         
         $models = TransactionDetail::with(['vendor', 'concept', 'vendorPackage', 'vendorVoucher'])->where('user_id', $user->id)
             ->where('transaction_id', $transaction->id)
             ->orderBy('created_at', 'DESC')->get();
 
-        $total = 0;
-        foreach ($models as $model) {
-            $total += $model->grand_total ? $model->grand_total : 0;
+        $adminFee = $transaction->admin_fee;
+        $total = $transaction->grand_total;
+
+        if (count($transaction->transactionDetails->toArray()) <= 0) {
+            $transaction->delete();
+            $transactionId = 0;
         }
         
         return response()->json([
             'status' => 200,
             'message' => 'Remove Success',
+            'admin_fee' => $adminFee,
             'total' => $total,
             'data' => $models,
-            'transaction_id' => $transaction->id
+            'transaction_id' => $transactionId
         ], 200);
     }
 }

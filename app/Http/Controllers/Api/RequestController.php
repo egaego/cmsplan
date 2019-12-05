@@ -106,7 +106,7 @@ class RequestController extends Controller
 				'status' => 401,
 				'message' => 'Invalid credentials'
 			], 401);
-		}
+        }
         
         $validator = \Validator::make($request->all(), [
             'category' => 'required',
