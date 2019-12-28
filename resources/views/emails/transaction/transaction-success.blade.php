@@ -93,7 +93,7 @@
 
     <!-- HIDDEN PREHEADER TEXT -->
     <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Open Sans, Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-      Mohon segera lakukan pembayaran sebelum 1x24 Jam. Terima Kasih :)
+      Terima kasih telah mempercayai kami untuk acara special anda.
     </div>
 
     <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -175,7 +175,7 @@
                   <tr>
                     <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 10px;">
                       <p style="font-size: 14px; font-weight: 400; line-height: 22px; color: #777777; padding: 0 30px;">
-                        Hai, Terima kasih atas kepercayaanmu kepada kami, Mohon segera lakukan pembayaran sebelum 1x24 Jam. Terima Kasih :)
+                        Hai, Terima kasih atas kepercayaan anda kepada kami, Pembayaran anda akan kami proses secepatnya, Terima Kasih :)
                       </p>
                     </td>
                   </tr>
