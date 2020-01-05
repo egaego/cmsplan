@@ -61,6 +61,10 @@
                                     <td> {!! $model->phone !!} </td>
                                 </tr>
                                 <tr>
+                                    <th> Rating </th>
+                                    <td> {!! $model->rating !!} </td>
+                                </tr>
+                                <tr>
                                     <th> Created At </th>
                                     <td> {{ $model->created_at }} </td>
                                 </tr>
@@ -163,6 +167,44 @@
                         </div>
                     </div>
                     
+                </div>
+
+                <div class="card">
+                    <div class="card-block">
+
+                        <div class="pull-left mrg-btm-20">
+                            <h4>Rating Lists</h4>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="rating-table" class="table table-lg table-hover" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User</th>
+                                        <th>Rate</th>
+                                        <th>Comment</th>
+                                        <th>Created at</th>
+                                        <th>Updated At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php $no = 1; @endphp
+                                    @foreach ($model->vendorRatings as $rating)
+                                    <tr>
+                                        <td>{{ $no++ }}</td>
+                                        <td>{{ $rating->user->name }}</td>
+                                        <td>{{ $rating->rate }}</td>
+                                        <td>{{ $rating->comment }}</td>
+                                        <td>{{ $rating->created_at }}</td>
+                                        <td>{{ $rating->updated_at }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -425,8 +467,8 @@ packageTables = $('#package-table').DataTable({
     columns: [
 		{ data: "rownum", name: "rownum" },
 		{ data: "name", name: "name" },
-		{ data: "price", name: "price" },
         { data: "description", name: "description" },
+        { data: "price", name: "price" },
         { data: "status", name: "status" },
 		{ data: "created_at", name: "created_at", visible:false },
 		{ data: "updated_at", name: "updated_at" },

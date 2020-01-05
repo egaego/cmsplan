@@ -22,13 +22,13 @@
 
 <div aria-required="true" class="form-group required form-group-default {{ $errors->has('start_date') ? 'has-error' : ''}}">
     {!! Form::label('start_date', 'Start Date') !!}
-    {!! Form::text('start_date', null, ['class' => 'form-control', 'placeholder' => "eg:2019-06-20"]) !!}
+    {!! Form::text('start_date', null, ['class' => 'form-control datepicker', 'placeholder' => "eg:2019-06-20"]) !!}
     {!! $errors->first('start_date', '<p class="help-block">:message</p>') !!}
 </div>
 
 <div aria-required="true" class="form-group required form-group-default {{ $errors->has('end_date') ? 'has-error' : ''}}">
     {!! Form::label('end_date', 'End Date') !!}
-    {!! Form::text('end_date', null, ['class' => 'form-control', 'placeholder' => "eg:2019-06-30"]) !!}
+    {!! Form::text('end_date', null, ['class' => 'form-control datepicker', 'placeholder' => "eg:2019-06-30"]) !!}
     {!! $errors->first('end_date', '<p class="help-block">:message</p>') !!}
 </div>
 
@@ -43,6 +43,12 @@
 
 @push('script')
 <script>
+$(".summernote").summernote({
+    height: 200,
+});
+$('.datepicker').datepicker({
+    format: 'yyyy-mm-dd'
+});
 $('.select2').selectize({
     sortField: 'text'
 });    

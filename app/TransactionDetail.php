@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use App\Transaction;
 
 class TransactionDetail extends BaseModel
 {   
@@ -41,6 +42,10 @@ class TransactionDetail extends BaseModel
      */
     protected $hidden = [
     ];
+
+    protected $appends = [
+        'is_rating'
+    ];
     
     protected $with = [
         // 'transaction',
@@ -49,6 +54,23 @@ class TransactionDetail extends BaseModel
         // 'vendorPackage',
         // 'vendorVoucher',
     ];
+
+    public function getIsRatingAttribute() {
+        $model = Transaction::find($this->attributes['transaction_id']);
+        if ($model->status == Transaction::STATUS_SUCCESS) {
+            $vendorRating = VendorRating::where('transaction_detail_id', $this->attributes['id'])->first();
+            if ($vendorRating) {
+                return 1;
+            }
+        }
+
+        return 1;
+    }
+
+    public function vendorRatings()
+    {
+        return $this->hasMany('\App\VendorRating', 'transaction_detail_id', 'id');
+    }
 
     public function transaction()
     {

@@ -52,9 +52,14 @@ class Vendor extends BaseModel
     
     protected $with = [
         'vendorDetails',
+        'vendorRatings',
         'vendorPackages',
         'vendorVouchers',
         'vendorActiveVoucher'
+    ];
+
+    protected $appends = [
+        'rating'
     ];
     
     public function __construct(array $attributes = array())
@@ -74,6 +79,28 @@ class Vendor extends BaseModel
         $this->setThumbPath($pathThumb);
     }
 
+    public function getRatingAttribute() {
+        $ratings = $this->vendorRatings;
+
+        if (count($ratings->toArray()) <= 0) {
+            return 0;
+        }
+
+        $countRating = count($ratings->toArray());
+        $total = 0;
+        foreach ($ratings as $rating) {
+            $total += (int) $rating->rate;
+        }
+
+        // return $countRating;
+
+        // if ($total > 0 || $countRating > 0) {
+            return (float)($total / $countRating);
+        // }
+
+        // return 0;
+    }
+
     public function concept()
     {
         return $this->hasOne('\App\Concept', 'id', 'concept_id');
@@ -82,6 +109,11 @@ class Vendor extends BaseModel
     public function vendorDetails()
     {
         return $this->hasMany('\App\VendorDetail', 'vendor_id', 'id');
+    }
+
+    public function vendorRatings()
+    {
+        return $this->hasMany('\App\VendorRating', 'vendor_id', 'id');
     }
 
     public function vendorPackages()

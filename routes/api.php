@@ -59,6 +59,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'transaction'], function () {
             Route::post('/store', 'Api\RequestController@setupTransaction');
             Route::get('/histories', 'Api\RequestController@transactionHistory');
+            Route::post('/rating', 'Api\RequestController@submitRating');
         });
 
         Route::group(['prefix' => 'contents'], function () {

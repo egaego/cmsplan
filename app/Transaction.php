@@ -72,6 +72,11 @@ class Transaction extends BaseModel
         return $this->hasMany('\App\TransactionDetail', 'transaction_id', 'id');
     }
 
+    public function vendorRatings()
+    {
+        return $this->hasMany('\App\VendorRating', 'transaction_id', 'id');
+    }
+
     public function transactionPayments()
     {
         return $this->hasMany('\App\TransactionPayment', 'transaction_id', 'id');

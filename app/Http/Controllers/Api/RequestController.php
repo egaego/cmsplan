@@ -10,6 +10,7 @@ use App\Page;
 use App\Bank;
 use App\Procedure;
 use App\Transaction;
+use App\VendorRating;
 use App\ReportProblem;
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -194,4 +195,41 @@ class RequestController extends Controller
             'data' => $models
         ], 200);
     }
+
+    public function submitRating(Request $request) {
+        $user = JWTAuth::parseToken()->authenticate();
+		if ($user->token != JWTAuth::getToken()) {
+			return response()->json([
+				'status' => 401,
+				'message' => 'Invalid credentials'
+			], 401);
+		}
+        
+        $validator = \Validator::make($request->all(), [
+            'transaction_id' => 'required',
+            'transaction_detail_id' => 'required',
+            'vendor_id' => 'required',
+            'rate' => 'required',
+            'comment' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+			return response()->json([
+				'status' => 400,
+				'message' => 'Some Parameters is required',
+				'validators' => FormatConverter::parseValidatorErrors($validator),
+			], 400);
+        }
+
+        $model = new VendorRating();
+        $model->fill($request->all());
+        $model->user_id = $user->id;
+        $model->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Thank you for submitting',
+        ], 200);
+        
+    }  
 }
