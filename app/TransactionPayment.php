@@ -3,6 +3,10 @@
 namespace App;
 
 use Carbon\Carbon;
+use Mail;
+use App\Mail\PaymentSuccessNotification;
+use App\Mail\PaymentInvoiceNotification;
+use App\Mail\AdminPaymentConfirmationNotification;
 
 class TransactionPayment extends BaseModel
 {   
@@ -155,5 +159,16 @@ class TransactionPayment extends BaseModel
             $file = $this->file;
         }
         @unlink($this->getThumbPath() . $file);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function sendPaymentConfirmationNotification()
+    {
+        Mail::to(config('mail.admin_mail'))
+                    ->queue(new AdminPaymentConfirmationNotification($this->user, $this->transaction));
+        
+        return true;
     }
 }

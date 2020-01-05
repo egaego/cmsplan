@@ -9,8 +9,8 @@
                 <div class="card-block">
                     
                     <div class="pull-left mrg-btm-20">
-                        <a href="{{ route('user.index') }}" class="btn btn-primary btn-rounded btn-sm"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
-                        <a href="{{ route('user.edit', ['id' => $model->id]) }}" class="btn btn-primary btn-rounded btn-sm">Update User</a>
+                        <a href="{{ route('user-app.index') }}" class="btn btn-primary btn-rounded btn-sm"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                        <a href="{{ route('user-app.edit', ['id' => $model->id]) }}" class="btn btn-primary btn-rounded btn-sm">Update User</a>
                     </div>
                     
                     <div class="table-responsive">

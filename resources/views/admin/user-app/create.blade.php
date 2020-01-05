@@ -12,7 +12,7 @@
                     <div class="card-block">
                         
                         <div class="mrg-btm-20">
-                            <a href="{{ route('user.index') }}" class="btn btn-primary btn-rounded btn-sm"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
+                            <a href="{{ route('user-app.index') }}" class="btn btn-primary btn-rounded btn-sm"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back</a>
                         </div>
                         
                         @include ('admin.user.form')
