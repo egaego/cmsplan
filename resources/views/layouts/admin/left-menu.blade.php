@@ -3,8 +3,7 @@
     <div class="side-nav-inner">
         <div class="side-nav-logo">
             <a href="index.html">
-                <div class="logo logo-dark" style="background-image: url('assets/images/logo/logo.png')"></div>
-                <div class="logo logo-white" style="background-image: url('assets/images/logo/logo-white.png')"></div>
+                <div class="logo" style="margin-top: 30px;margin-bottom:-30px;margin-left: 10px; font-size: 24px;">PYD</div>
             </a>
             <div class="mobile-toggle side-nav-toggle">
                 <a href="index.html">

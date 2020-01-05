@@ -53,13 +53,13 @@ class TransactionController extends Controller
         $requestData = $request->all();
 		
         $model->fill($requestData);
-        
+        $model->save();
         if ($model->status == \App\Transaction::STATUS_SUCCESS) {
             $model->status_payment = \App\Transaction::STATUS_PAYMENT_PAID;
             $model->payment_paid_at = \Carbon\Carbon::now()->toDateTimeString();
+            $model->save();
+            $model->sendPaymentSuccessNotification();
         }
-
-		$model->save();
 		
         Session::flash('success', 'Transaction updated!');
 

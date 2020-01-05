@@ -12,10 +12,22 @@
 */
 
 Route::get('/', 'Web\\SiteController@index');
-Route::get('test', function() {
+Route::get('test-invoice', function() {
     $model = \App\Transaction::find(1);
     $user = \App\User::find(2);
     return view('emails.transaction.transaction-invoice', compact('model', 'user'));
+});
+
+Route::get('test-confirmed', function() {
+    $model = \App\Transaction::find(1);
+    $user = \App\User::find(2);
+    return view('emails.transaction.transaction-confirmed', compact('model', 'user'));
+});
+
+Route::get('test-success', function() {
+    $model = \App\Transaction::find(1);
+    $user = \App\User::find(2);
+    return view('emails.transaction.transaction-success', compact('model', 'user'));
 });
 
 Route::get('/register-relation/{token}', 'Web\\SiteController@registerRequest');

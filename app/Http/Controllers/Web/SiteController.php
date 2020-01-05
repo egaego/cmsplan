@@ -163,6 +163,7 @@ class SiteController extends Controller
             $model->file = $filename;
         }
         $model->save();
+        $model->sendPaymentConfirmationNotification();
         
         \Session::flash('success', 'Konfirmasi Sukses');
         

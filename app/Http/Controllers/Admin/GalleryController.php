@@ -15,7 +15,8 @@ use Session;
 class GalleryController extends Controller
 {
 	protected $rules = [
-		'name' => 'required',
+        'name' => 'required',
+        'concept_id' => 'required',
         'file' => 'required|file|min:1|max:50000|image',
 		'status' => 'required',
 	];

@@ -8,6 +8,12 @@
     </div>
 @endif
 
+<div aria-required="true" class="form-group required form-group-default {{ $errors->has('concept_id') ? 'has-error' : ''}}">
+    {!! Form::label('concept_id', 'Concept Category') !!}
+    {!! Form::select('concept_id', \App\Concept::actived()->pluck('name', 'id'), null, ['class' => 'select2 full-width', 'data-init-plugin' => 'select2']) !!}
+    {!! $errors->first('concept_id', '<p class="help-block">:message</p>') !!}
+</div>
+
 <div aria-required="true" class="form-group required form-group-default {{ $errors->has('name') ? 'has-error' : ''}}">
     {!! Form::label('name', 'Name') !!}
     {!! Form::text('name', null, ['class' => 'form-control']) !!}

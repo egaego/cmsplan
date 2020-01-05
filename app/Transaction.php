@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Mail;
 use App\Mail\PaymentSuccessNotification;
 use App\Mail\PaymentInvoiceNotification;
+use App\Mail\AdminPaymentConfirmationNotification;
 
 class Transaction extends BaseModel
 {   
@@ -151,6 +152,17 @@ class Transaction extends BaseModel
     {
         Mail::to([$this->user->email], $this->user->name)
                     ->queue(new PaymentInvoiceNotification($this->user, $this));
+        
+        return true;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function sendPaymentConfirmationNotification()
+    {
+        Mail::to(config('mail.admin_mail'), config('mail.admin_mail_name'))
+                    ->queue(new AdminPaymentConfirmationNotification($this->user, $this));
         
         return true;
     }

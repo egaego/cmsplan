@@ -120,4 +120,6 @@ return [
         ],
     ],
 
+    'admin_mail' => ["hendri.gnw@gmail.com","hendrigunawan195@gmail.com"],
+    'admin_mail_name' => env('MAIL_ADMIN_NAME')
 ];

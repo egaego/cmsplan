@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <title>Tagihan dan Petunjuk Pembayaran</title>
+  <title>Konfirmasi Pembayaran</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -166,16 +166,16 @@
                 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px;">
                   <tr>
                     <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 25px;">
-                      <img src="https://trello-attachments.s3.amazonaws.com/5dadeb2db0c3266f2770247a/5dae07725c31137ea7c4a2a7/4a6333a4e95c8fdaca5d15100745a727/ceklis-green.png" width="100" height="100" style="display: block; border: 0px;" /><br>
-                      <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #99C13C; margin: 0; font-style: italic;">
-                                Payment Successful!
+                      <img src="https://trello-attachments.s3.amazonaws.com/5dadeb2db0c3266f2770247a/5dae07725c31137ea7c4a2a7/92bbd63e433eef987a95af90a4714d2a/ceklis-grey.png" width="100" height="100" style="display: block; border: 0px;" /><br>
+                      <h2 style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;">
+                                Konfirmasi Pembayaran!
                             </h2>
                     </td>
                   </tr>
                   <tr>
                     <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 10px;">
                       <p style="font-size: 14px; font-weight: 400; line-height: 22px; color: #777777; padding: 0 30px;">
-                        Hai, Terima kasih atas kepercayaanmu kepada kami, Mohon segera lakukan pembayaran sebelum 1x24 Jam. Terima Kasih :)
+                        Hai Admin, User {{ $user->name }} telah mengkonfirmasi pembayaran dengan detail transaksi sebagai berikut.
                       </p>
                     </td>
                   </tr>
@@ -279,6 +279,78 @@
                       </table>
                     </td>
                   </tr>
+                  <tr>
+                    <td align="left" style="padding-top: 20px;">
+                      <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                        <tr>
+                          <td width="75%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
+                            Detail Konfirmasi Pembayaran
+                          </td>
+                          <td width="25%" align="left" bgcolor="#eeeeee" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px;">
+                            {{ $model->code }}
+                          </td>
+                          @foreach ($model->transactionPayments as $payment)
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                Transfer ke Bank
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ $payment->bank->account_name }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                File Upload
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                <a href="{{ $payment->getFileUrl() }}">File</a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                Dari Bank
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ $payment->user_bank_account_name }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                A\N
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ $payment->user_account_holder }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                No Rekening
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ $payment->user_account_number }}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                Total
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ \App\Helpers\FormatConverter::rupiahFormat($payment->total) }} IDR
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="45%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                Tanggal
+                              </td>
+                              <td width="55%" align="left" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 24px; padding: 15px 10px 5px 10px;">
+                                {{ $payment->created_at }}
+                              </td>
+                            </tr>
+                          @endforeach
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
                 </table>
                 <!--[if (gte mso 9)|(IE)]>
                 </td>
@@ -287,7 +359,40 @@
                 <![endif]-->
               </td>
             </tr>
-
+            <tr>
+              <td align="center" style=" padding: 35px; background-color: #eeeeee;" bgcolor="#eeeeee">
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+                <tr>
+                <td align="center" valign="top" width="600">
+                <![endif]-->
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:1000px;">
+                  <tr>
+                    <td align="center" style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px; padding-top: 25px;">
+                      <h2 style="font-size: 20px; font-weight: 800; line-height: 30px; margin: 0;">
+                                Lihat Selengkapnya dan Perbaharui Status Customer
+                            </h2>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="padding: 25px 0 15px 0;">
+                      <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td align="center" style="border-radius: 45px;" bgcolor="#F06EA9">
+                            <a href="{{ url('/admin/transaction') . '/' .  $model->id }}" target="_blank" style="font-size: 18px; font-family: Open Sans, Helvetica, Arial, sans-serif; color: #ffffff; text-align: center; text-decoration: none; border-radius: 45px; background-color: #F06EA9; padding: 15px 30px 15px; border: none; display: block;">Buka Detail</a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+              </td>
+            </tr>
             <tr>
               <td align="center" style="padding: 35px 35px 15px; background-color: #ffffff;" bgcolor="#ffffff">
                 <!--[if (gte mso 9)|(IE)]>
