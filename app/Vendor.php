@@ -95,7 +95,7 @@ class Vendor extends BaseModel
         // return $countRating;
 
         // if ($total > 0 || $countRating > 0) {
-            return (float)($total / $countRating);
+            return round((float) ($total / $countRating), 1);
         // }
 
         // return 0;

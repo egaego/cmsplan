@@ -15,6 +15,7 @@ use Session;
 class VendorVoucherController extends Controller
 {
 	protected $rules = [
+        'vendor_id' => 'required',
 		'name' => 'required',
 		'status' => 'required',
         'discount' => 'required',
@@ -38,11 +39,10 @@ class VendorVoucherController extends Controller
      *
      * @return View
      */
-    public function create($vendorId)
+    public function create()
     {
-        $vendor = \App\Vendor::find($vendorId);
         
-        return view('admin.vendor-voucher.create', compact('vendor'));
+        return view('admin.vendor-voucher.create');
     }
 
     /**
@@ -52,19 +52,18 @@ class VendorVoucherController extends Controller
      *
      * @return RedirectResponse|Redirector
      */
-    public function store($vendorId, Request $request)
+    public function store(Request $request)
     {
         $this->validate($request, $this->rules);
 		
 		$model = new VendorVoucher();
 		$requestData = $request->all();
 		$model->fill($requestData);
-        $model->vendor_id = $vendorId;
 		$model->save();
         
         Session::flash('success', 'VendorVoucher added!');
         
-        return redirect(route('vendor.show', ['id' => $model->vendor_id]));
+        return redirect(route('vendor-voucher.show', ['id' => $model->id]));
     }
 
     /**
@@ -117,7 +116,7 @@ class VendorVoucherController extends Controller
 		
         Session::flash('success', 'VendorVoucher updated!');
 
-        return redirect(route('vendor.show', ['id' => $model->vendor_id]));
+        return redirect(route('vendor-voucher.show', ['id' => $model->id]));
     }
 
     /**
@@ -151,6 +150,41 @@ class VendorVoucherController extends Controller
          $datatables = app('datatables')->of($model)
             ->editColumn('status', function ($model) {
                 return $model->getStatusLabel();
+            })
+            ->addColumn('action', function ($model) {
+                return '<a href="'.route('vendor-voucher.edit', ['id'=>$model->id]).'" class="btn btn-xs btn-primary rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-pencil"></i></a> '
+						. '<a onclick="modalDelete('.$model->id.')" href="javascript:;" class="btn btn-xs btn-danger rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.delete') .'"><i class="fa fa-trash"></i></a>';
+            });
+
+        if ($keyword = $request->get('search')['value']) {
+            $datatables->filterColumn('rownum', 'whereRaw', '@rownum  + 1 like ?', ["%{$keyword}%"]);
+        }
+
+//        if ($range = $datatables->request->get('range')) {
+//            $rang = explode(":", $range);
+//            if($rang[0] != "Invalid date" && $rang[1] != "Invalid date" && $rang[0] != $rang[1]){
+//                $datatables->whereBetween('vendor-voucher.created_at', ["$rang[0] 00:00:00", "$rang[1] 23:59:59"]);
+//            }else if($rang[0] != "Invalid date" && $rang[1] != "Invalid date" && $rang[0] == $rang[1]) {
+//                $datatables->whereBetween('vendor-voucher.created_at', ["$rang[0] 00:00:00", "$rang[1] 23:59:59"]);
+//            }
+//        }
+		
+        return $datatables->make(true);
+    }
+
+    public function listIndexs(Request $request)
+    {
+        DB::statement(DB::raw('set @rownum=0'));
+        $model = VendorVoucher::select([
+					DB::raw('@rownum  := @rownum  + 1 AS rownum'), 'vendor_voucher.*'
+				]);
+
+         $datatables = app('datatables')->of($model)
+            ->editColumn('status', function ($model) {
+                return $model->getStatusLabel();
+            })
+            ->editColumn('vendor_id', function ($model) {
+                return $model->vendor ? $model->vendor->name : '';
             })
             ->addColumn('action', function ($model) {
                 return '<a href="'.route('vendor-voucher.edit', ['id'=>$model->id]).'" class="btn btn-xs btn-primary rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-pencil"></i></a> '

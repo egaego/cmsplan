@@ -82,6 +82,22 @@
                     <span class="title">Vendors</span>
                 </a>
             </li>
+            <li class="nav-item  {{ (Request::is('admin/vendor-voucher*')) ? 'active' : '' }}">
+                <a href="{{ route('vendor-voucher.index') }}">
+                    <span class="icon-holder">
+                        <i class="ti-list-ol"></i>
+                    </span>
+                    <span class="title">Vouchers</span>
+                </a>
+            </li>
+            <li class="nav-item  {{ (Request::is('admin/vendor-rating*')) ? 'active' : '' }}">
+                <a href="{{ route('vendor-rating.index') }}">
+                    <span class="icon-holder">
+                        <i class="ti-star"></i>
+                    </span>
+                    <span class="title">Rating</span>
+                </a>
+            </li>
             <li class="nav-item  {{ (Request::is('admin/gallery*')) ? 'active' : '' }}">
                 <a href="{{ route('gallery.index') }}">
                     <span class="icon-holder">

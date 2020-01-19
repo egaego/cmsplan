@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
-@section('headerTitle', 'Vendor')
-@section('pageTitle', 'Vendor')
+@section('headerTitle', 'Voucher')
+@section('pageTitle', 'Voucher')
 
 @section('content')
 
@@ -15,10 +15,12 @@
                             <thead>
                                 <tr>
                                     <th>*</th>
+                                    <th>Vendor</th>
                                     <th>Name</th>
-                                    <th>File</th>
+                                    <th>Discount</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
                                     <th>Status</th>
-                                    <th>Order</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th></th>
@@ -28,7 +30,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ route('vendor.create') }}" class="btn btn-primary btn-rounded">Add New Vendor</a>
+                    <a href="{{ route('vendor-voucher.create') }}" class="btn btn-primary btn-rounded">Add New Voucher</a>
                 </div>
             </div>
         </div>
@@ -88,17 +90,19 @@ oTable = $('#vendor-table').DataTable({
     },
     lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
     ajax: {
-    url: '{!! route('vendor.data') !!}',
+    url: '{!! route('vendor-vouchers.data') !!}',
         data: function (d) {
             d.range = $('input[name=drange]').val();
         }
     },
     columns: [
 		{ data: "rownum", name: "rownum" },
+        { data: "vendor_id", name: "vendor_id" },
 		{ data: "name", name: "name" },
-		{ data: "file", name: "file" },
+		{ data: "discount", name: "discount" },
+		{ data: "start_date", name: "start_date" },
+        { data: "end_date", name: "end_date" },
 		{ data: "status", name: "status" },
-		{ data: "order", name: "order" },
 		{ data: "created_at", name: "created_at", visible:false },
 		{ data: "updated_at", name: "updated_at" },
         { data: "action", name: "action", searchable: false, orderable: false },
@@ -123,7 +127,7 @@ function deleteRecord(){
     $('#modal-delete').modal('hide');
     var id = $('#delete_value').val();
     $.ajax({
-        url: '{{route("vendor.index")}}' + "/" + id + '?' + $.param({"_token" : '{{ csrf_token() }}' }),
+        url: '{{route("vendor-voucher.index")}}' + "/" + id + '?' + $.param({"_token" : '{{ csrf_token() }}' }),
         type: 'DELETE',
         complete: function(data) {
             oTable.draw();

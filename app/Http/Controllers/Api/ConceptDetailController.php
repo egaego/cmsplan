@@ -74,7 +74,7 @@ class ConceptDetailController extends Controller
             'vendor_id' => 'required',
             'vendor_package_id' => 'required',
             'vendor_voucher_id' => 'nullable',
-            'discount' => 'required',
+            'discount' => 'nullable',
             'price' => 'required',
             'date' => 'required'
 		]);

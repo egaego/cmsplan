@@ -27,6 +27,9 @@
                                     <th>#</th>
                                     <th>Code</th>
                                     <th>User</th>
+                                    <th>Bank</th>
+                                    <th>Payment Method</th>
+                                    <th>Vendor</th>
                                     <th>Grand Total</th>
                                     <th>Updated at</th>
                                     <td></td>
@@ -104,6 +107,9 @@ oTable = $('#pending-table').DataTable({
 		{ data: "rownum", name: "rownum" },
 		{ data: "code", name: "code" },
 		{ data: "user_id", name: "user_id" },
+        { data: "bank_id", name: "bank_id" },
+        { data: "payment_type_id", name: "payment_type_id" },
+        { data: "vendor", name: "vendor" },
 		{ data: "grand_total", name: "grand_total" },
 		{ data: "updated_at", name: "updated_at" },
         { data: "action", name: "action", searchable: false, orderable: false },

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\VendorPackage;
+use App\VendorRating;
 use DB;
 use Eventviva\ImageResize;
 use Illuminate\Http\RedirectResponse;
@@ -12,14 +12,8 @@ use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use Session;
 
-class VendorPackageController extends Controller
+class VendorRatingController extends Controller
 {
-	protected $rules = [
-		'name' => 'required',
-		'status' => 'required',
-        'description' => 'required',
-        'price' => 'required',
-	];
 
 
 	/**
@@ -29,7 +23,7 @@ class VendorPackageController extends Controller
      */
     public function index()
     {
-        return view('admin.vendor-package.index');
+        return view('admin.vendor-rating.index');
     }
 
     /**
@@ -41,7 +35,7 @@ class VendorPackageController extends Controller
     {
         $vendor = \App\Vendor::find($vendorId);
         
-        return view('admin.vendor-package.create', compact('vendor'));
+        return view('admin.vendor-rating.create', compact('vendor'));
     }
 
     /**
@@ -139,20 +133,19 @@ class VendorPackageController extends Controller
 	/**
 	 * any data
 	 */
-	public function listIndex($id, Request $request)
+	public function listIndex(Request $request)
     {
         DB::statement(DB::raw('set @rownum=0'));
-        $model = VendorPackage::select([
-					DB::raw('@rownum  := @rownum  + 1 AS rownum'), 'vendor_package.*'
-				])
-                ->where('vendor_id', $id);
+        $model = VendorRating::select([
+					DB::raw('@rownum  := @rownum  + 1 AS rownum'), 'vendor_rating.*'
+				]);
 
          $datatables = app('datatables')->of($model)
-            ->editColumn('status', function ($model) {
-                return $model->getStatusLabel();
-            })
             ->editColumn('vendor_id', function ($model) {
-                return $model->vendor ? $model->vendor->name : "";
+                return $model->vendor ? $model->vendor->name : '';
+            })
+            ->editColumn('user_id', function ($model) {
+                return $model->user ? $model->user->name : "";
             })
             ->addColumn('action', function ($model) {
                 return '<a href="'.route('vendor-package.edit', ['id'=>$model->id]).'" class="btn btn-xs btn-primary rounded" data-toggle="tooltip" title="" data-original-title="'. trans('systems.edit') .'"><i class="fa fa-pencil"></i></a> '

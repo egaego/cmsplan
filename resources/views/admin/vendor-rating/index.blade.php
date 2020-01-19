@@ -1,6 +1,6 @@
 @extends('layouts.admin.main')
-@section('headerTitle', 'Partners')
-@section('pageTitle', 'Partners')
+@section('headerTitle', 'Vendor Rating')
+@section('pageTitle', 'Vendor Rating')
 
 @section('content')
 
@@ -8,18 +8,17 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-block">
-
                     <input type="hidden" id="drs" name="drange"/>
                     <input type="hidden" id="delete_value" name="delete_value"/>
                     <div class="table-overflow">
-                        <table id="user-table" class="table table-lg table-hover" width="100%">
+                        <table id="vendor-table" class="table table-lg table-hover" width="100%">
                             <thead>
                                 <tr>
                                     <th>*</th>
-                                    <th>Partner Name</th>
-                                    <th>Customer Name</th>
-                                    <th>Wedding Day</th>
-                                    <th>Venue</th>
+                                    <th>Vendor</th>
+                                    <th>User</th>
+                                    <th>Rate</th>
+                                    <th>Comment</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th></th>
@@ -36,7 +35,7 @@
 @push('script')
 <script>
 var oTable;
-oTable = $('#user-table').DataTable({
+oTable = $('#vendor-table').DataTable({
     processing: true,
     serverSide: true,
     dom: 'lBfrtip',
@@ -50,7 +49,7 @@ oTable = $('#user-table').DataTable({
                 $(win.document.body)
                     .css( 'padding', '2px' )
                     .prepend(
-                        '<img src="{{asset('img/logo.png')}}" style="float:right; top:0; left:0;height: 40px;right: 10px;background: #101010;padding: 8px;border-radius: 4px" /><h5 style="font-size: 9px;margin-top: 0px;"><br/><font style="font-size:14px;margin-top: 5px;margin-bottom:20px;"> Report Partners</font><br/><br/><font style="font-size:8px;margin-top:15px;">{{date('Y-m-d h:i:s')}}</font></h5><br/><br/>'
+                        '<img src="{{asset('img/logo.png')}}" style="float:right; top:0; left:0;height: 40px;right: 10px;background: #101010;padding: 8px;border-radius: 4px" /><h5 style="font-size: 9px;margin-top: 0px;"><br/><font style="font-size:14px;margin-top: 5px;margin-bottom:20px;"> Report Vendor Rating</font><br/><br/><font style="font-size:8px;margin-top:15px;">{{date('Y-m-d h:i:s')}}</font></h5><br/><br/>'
                     );
 
 
@@ -86,24 +85,24 @@ oTable = $('#user-table').DataTable({
     },
     lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
     ajax: {
-    url: '{!! route('user-relation.data') !!}',
+    url: '{!! route('vendor-rating.data') !!}',
         data: function (d) {
             d.range = $('input[name=drange]').val();
         }
     },
     columns: [
 		{ data: "rownum", name: "rownum" },
-		{ data: "relation_name", name: "relation_name" },
-        { data: "user_id", name: "user_id" },
-		{ data: "wedding_day", name: "wedding_day" },
-		{ data: "venue", name: "venue" },
+        { data: "vendor_id", name: "vendor_id" },
+		{ data: "user_id", name: "user_id" },
+        { data: "rate", name: "rate" },
+		{ data: "comment", name: "comment" },
 		{ data: "created_at", name: "created_at", visible:false },
 		{ data: "updated_at", name: "updated_at" },
         { data: "action", name: "action", searchable: false, orderable: false },
     ],
 }).on( 'processing.dt', function ( e, settings, processing ) {if(processing){Pace.start();} else {Pace.stop();}});
 
-$("#concept-table_wrapper > .dt-buttons").appendTo("div.export-options-container");
+$("#vendor-table_wrapper > .dt-buttons").appendTo("div.export-options-container");
 
 $('#formsearch').submit(function () {
     oTable.search( $('#search-table').val() ).draw();
@@ -121,7 +120,7 @@ function deleteRecord(){
     $('#modal-delete').modal('hide');
     var id = $('#delete_value').val();
     $.ajax({
-        url: '{{route("user.index")}}' + "/" + id + '?' + $.param({"_token" : '{{ csrf_token() }}' }),
+        url: '{{route("vendor-voucher.index")}}' + "/" + id + '?' + $.param({"_token" : '{{ csrf_token() }}' }),
         type: 'DELETE',
         complete: function(data) {
             oTable.draw();

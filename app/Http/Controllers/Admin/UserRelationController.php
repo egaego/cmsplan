@@ -143,7 +143,10 @@ class UserRelationController extends Controller
 
          $datatables = app('datatables')->of($model)
             ->addColumn('relation_name', function ($model) {
-                return $model->getRelationName();
+                return $model->getPartnerName();
+            })
+            ->addColumn('user_id', function ($model) {
+                return $model->getCustomerName();
             })
             ->editColumn('wedding_day', function ($model) {
                 return \Carbon\Carbon::parse($model->wedding_day)->format('d M Y');

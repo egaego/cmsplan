@@ -29,6 +29,15 @@ class DashboardController extends \App\Http\Controllers\Controller
             ->editColumn('user_id', function($model) {
                 return $model->user ? $model->user->name : $model->user_id;
             })
+            ->editColumn('bank_id', function($model) {
+                return $model->transactionPayments ? $model->transactionPayments[0]->bank ? $model->transactionPayments[0]->bank->name : '' : '';
+            })
+            ->editColumn('payment_type_id', function($model) {
+                return $model->paymentType ? $model->paymentType->name : $model->payment_type_id;
+            })
+            ->addColumn('vendor', function($model) {
+                return $model->transactionDetails ? $model->transactionDetails[0]->vendor ? $model->transactionDetails[0]->vendor->name : '' : '';
+            })
             ->editColumn('grand_total', function($model) {
                 return \App\Helpers\FormatConverter::rupiahFormat($model->grand_total, 2);
             })

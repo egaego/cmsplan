@@ -15,10 +15,12 @@
                             <thead>
                                 <tr>
                                     <th>*</th>
+                                    <th>Concept</th>
                                     <th>Name</th>
                                     <th>File</th>
                                     <th>Status</th>
                                     <th>Order</th>
+                                    <th>Rating Count</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th></th>
@@ -95,12 +97,14 @@ oTable = $('#vendor-table').DataTable({
     },
     columns: [
 		{ data: "rownum", name: "rownum" },
+        { data: "concept_id", name: "concept_id" },
 		{ data: "name", name: "name" },
 		{ data: "file", name: "file" },
 		{ data: "status", name: "status" },
 		{ data: "order", name: "order" },
+        { data: "rating", name: "rating" },
 		{ data: "created_at", name: "created_at", visible:false },
-		{ data: "updated_at", name: "updated_at" },
+		{ data: "updated_at", name: "updated_at", visible:false  },
         { data: "action", name: "action", searchable: false, orderable: false },
     ],
 }).on( 'processing.dt', function ( e, settings, processing ) {if(processing){Pace.start();} else {Pace.stop();}});

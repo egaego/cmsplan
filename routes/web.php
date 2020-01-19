@@ -88,6 +88,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
     
     Route::get('/vendor/data', ['as' => 'vendor.data', 'uses' => 'Admin\\VendorController@listIndex']);
     Route::resource('/vendor', 'Admin\\VendorController');
+
+    Route::get('/vendor-vouchers/data', ['as' => 'vendor-vouchers.data', 'uses' => 'Admin\\VendorVoucherController@listIndexs']);
+    Route::resource('/vendor-voucher', 'Admin\\VendorVoucherController');
+
+    Route::get('/vendor-rating/data', ['as' => 'vendor-rating.data', 'uses' => 'Admin\\VendorRatingController@listIndex']);
+    Route::resource('/vendor-rating', 'Admin\\VendorRatingController');
     
     Route::get('/gallery/data', ['as' => 'gallery.data', 'uses' => 'Admin\\GalleryController@listIndex']);
     Route::resource('/gallery', 'Admin\\GalleryController');
@@ -99,15 +105,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
         Route::get('/{id}/edit', ['as' => 'vendor-detail.edit', 'uses' => 'Admin\\VendorDetailController@edit']);
         Route::patch('/{id}', ['as' => 'vendor-detail.update', 'uses' => 'Admin\\VendorDetailController@update']);
         Route::delete('/{id}', ['as' => 'vendor-detail.delete', 'uses' => 'Admin\\VendorDetailController@delete']);
-    });
-
-    Route::group(['prefix' =>'vendor-voucher'], function() {
-        Route::get('/data/{id}', ['as' => 'vendor-voucher.data', 'uses' => 'Admin\\VendorVoucherController@listIndex']);
-        Route::get('/create/{vendorId}', ['as' => 'vendor-voucher.create', 'uses' => 'Admin\\VendorVoucherController@create']);
-        Route::post('/create/{vendorId}', ['as' => 'vendor-voucher.store', 'uses' => 'Admin\\VendorVoucherController@store']);
-        Route::get('/{id}/edit', ['as' => 'vendor-voucher.edit', 'uses' => 'Admin\\VendorVoucherController@edit']);
-        Route::patch('/{id}', ['as' => 'vendor-voucher.update', 'uses' => 'Admin\\VendorVoucherController@update']);
-        Route::delete('/{id}', ['as' => 'vendor-voucher.delete', 'uses' => 'Admin\\VendorVoucherController@delete']);
     });
 
     Route::group(['prefix' =>'vendor-package'], function() {

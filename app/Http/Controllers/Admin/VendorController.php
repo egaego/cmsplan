@@ -218,6 +218,12 @@ class VendorController extends Controller
             ->editColumn('status', function ($model) {
                 return $model->getStatusLabel();
             })
+            ->editColumn('concept_id', function ($model) {
+                return $model->concept ? $model->concept->name : '';
+            })
+            ->addColumn('rating', function ($model) {
+                return count($model->vendorRatings->toArray());
+            })
             ->editColumn('file', function ($model) {
                 return $model->getFileThumbImg();
             })

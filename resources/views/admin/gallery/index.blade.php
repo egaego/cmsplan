@@ -15,6 +15,7 @@
                             <thead>
                                 <tr>
                                     <th>*</th>
+                                    <th>Concept</th>
                                     <th>Name</th>
                                     <th>File</th>
                                     <th>Status</th>
@@ -94,6 +95,7 @@ oTable = $('#vendor-table').DataTable({
     },
     columns: [
 		{ data: "rownum", name: "rownum" },
+        { data: "concept_id", name: "concept_id" },
 		{ data: "name", name: "name" },
 		{ data: "file", name: "file" },
 		{ data: "status", name: "status" },

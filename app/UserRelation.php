@@ -124,6 +124,22 @@ class UserRelation extends BaseModel
         }
         return $female . ' & ' . $male;
     }
+
+    public function getPartnerName() {
+        $female = $this->femaleUser->name;
+        if ($female == null) {
+            $female = 'Pasangan Anda';
+        }
+        return $female;
+    }
+
+    public function getCustomerName() {
+        $male = $this->maleUser->name;
+        if ($male == null) {
+            $male = 'Pasangan Anda';
+        }
+        return $male;
+    }
     
     public function getListCosts()
     {

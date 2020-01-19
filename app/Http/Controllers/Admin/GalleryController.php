@@ -185,6 +185,9 @@ class GalleryController extends Controller
             ->editColumn('status', function ($model) {
                 return $model->getStatusLabel();
             })
+            ->editColumn('concept_id', function ($model) {
+                return $model->concept ? $model->concept->name : '';
+            })
             ->editColumn('file', function ($model) {
                 return $model->getFileThumbImg();
             })
