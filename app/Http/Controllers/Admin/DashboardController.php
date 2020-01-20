@@ -36,7 +36,7 @@ class DashboardController extends \App\Http\Controllers\Controller
                 return $model->paymentType ? $model->paymentType->name : $model->payment_type_id;
             })
             ->addColumn('vendor', function($model) {
-                return $model->transactionDetails ? $model->transactionDetails[0]->vendor ? $model->transactionDetails[0]->vendor->name : '' : '';
+                return isset($model->transactionDetails[0]) ? isset($model->transactionDetails[0]->vendor) ? $model->transactionDetails[0]->vendor->name : '' : '';
             })
             ->editColumn('grand_total', function($model) {
                 return \App\Helpers\FormatConverter::rupiahFormat($model->grand_total, 2);
